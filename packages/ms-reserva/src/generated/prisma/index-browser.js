@@ -123,7 +123,7 @@ exports.Prisma.ItineraryScalarFieldEnum = {
   embarkPort: 'embarkPort',
   disembarkPort: 'disembarkPort',
   visitedPlaces: 'visitedPlaces',
-  numberOfNights: 'numberOfNights',
+  duration: 'duration',
   pricePerPerson: 'pricePerPerson',
   shipName: 'shipName'
 };

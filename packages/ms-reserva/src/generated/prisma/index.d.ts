@@ -1145,13 +1145,13 @@ export namespace Prisma {
 
   export type ItineraryAvgAggregateOutputType = {
     id: number | null
-    numberOfNights: number | null
+    duration: number | null
     pricePerPerson: number | null
   }
 
   export type ItinerarySumAggregateOutputType = {
     id: number | null
-    numberOfNights: number | null
+    duration: number | null
     pricePerPerson: number | null
   }
 
@@ -1161,7 +1161,7 @@ export namespace Prisma {
     embarkPort: string | null
     disembarkPort: string | null
     visitedPlaces: string | null
-    numberOfNights: number | null
+    duration: number | null
     pricePerPerson: number | null
     shipName: string | null
   }
@@ -1172,7 +1172,7 @@ export namespace Prisma {
     embarkPort: string | null
     disembarkPort: string | null
     visitedPlaces: string | null
-    numberOfNights: number | null
+    duration: number | null
     pricePerPerson: number | null
     shipName: string | null
   }
@@ -1183,7 +1183,7 @@ export namespace Prisma {
     embarkPort: number
     disembarkPort: number
     visitedPlaces: number
-    numberOfNights: number
+    duration: number
     pricePerPerson: number
     shipName: number
     _all: number
@@ -1192,13 +1192,13 @@ export namespace Prisma {
 
   export type ItineraryAvgAggregateInputType = {
     id?: true
-    numberOfNights?: true
+    duration?: true
     pricePerPerson?: true
   }
 
   export type ItinerarySumAggregateInputType = {
     id?: true
-    numberOfNights?: true
+    duration?: true
     pricePerPerson?: true
   }
 
@@ -1208,7 +1208,7 @@ export namespace Prisma {
     embarkPort?: true
     disembarkPort?: true
     visitedPlaces?: true
-    numberOfNights?: true
+    duration?: true
     pricePerPerson?: true
     shipName?: true
   }
@@ -1219,7 +1219,7 @@ export namespace Prisma {
     embarkPort?: true
     disembarkPort?: true
     visitedPlaces?: true
-    numberOfNights?: true
+    duration?: true
     pricePerPerson?: true
     shipName?: true
   }
@@ -1230,7 +1230,7 @@ export namespace Prisma {
     embarkPort?: true
     disembarkPort?: true
     visitedPlaces?: true
-    numberOfNights?: true
+    duration?: true
     pricePerPerson?: true
     shipName?: true
     _all?: true
@@ -1328,7 +1328,7 @@ export namespace Prisma {
     embarkPort: string
     disembarkPort: string
     visitedPlaces: string
-    numberOfNights: number
+    duration: number
     pricePerPerson: number
     shipName: string
     _count: ItineraryCountAggregateOutputType | null
@@ -1358,7 +1358,7 @@ export namespace Prisma {
     embarkPort?: boolean
     disembarkPort?: boolean
     visitedPlaces?: boolean
-    numberOfNights?: boolean
+    duration?: boolean
     pricePerPerson?: boolean
     shipName?: boolean
     trips?: boolean | Itinerary$tripsArgs<ExtArgs>
@@ -1371,7 +1371,7 @@ export namespace Prisma {
     embarkPort?: boolean
     disembarkPort?: boolean
     visitedPlaces?: boolean
-    numberOfNights?: boolean
+    duration?: boolean
     pricePerPerson?: boolean
     shipName?: boolean
   }, ExtArgs["result"]["itinerary"]>
@@ -1382,7 +1382,7 @@ export namespace Prisma {
     embarkPort?: boolean
     disembarkPort?: boolean
     visitedPlaces?: boolean
-    numberOfNights?: boolean
+    duration?: boolean
     pricePerPerson?: boolean
     shipName?: boolean
   }, ExtArgs["result"]["itinerary"]>
@@ -1393,12 +1393,12 @@ export namespace Prisma {
     embarkPort?: boolean
     disembarkPort?: boolean
     visitedPlaces?: boolean
-    numberOfNights?: boolean
+    duration?: boolean
     pricePerPerson?: boolean
     shipName?: boolean
   }
 
-  export type ItineraryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "destination" | "embarkPort" | "disembarkPort" | "visitedPlaces" | "numberOfNights" | "pricePerPerson" | "shipName", ExtArgs["result"]["itinerary"]>
+  export type ItineraryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "destination" | "embarkPort" | "disembarkPort" | "visitedPlaces" | "duration" | "pricePerPerson" | "shipName", ExtArgs["result"]["itinerary"]>
   export type ItineraryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     trips?: boolean | Itinerary$tripsArgs<ExtArgs>
     _count?: boolean | ItineraryCountOutputTypeDefaultArgs<ExtArgs>
@@ -1417,7 +1417,7 @@ export namespace Prisma {
       embarkPort: string
       disembarkPort: string
       visitedPlaces: string
-      numberOfNights: number
+      duration: number
       pricePerPerson: number
       shipName: string
     }, ExtArgs["result"]["itinerary"]>
@@ -1849,7 +1849,7 @@ export namespace Prisma {
     readonly embarkPort: FieldRef<"Itinerary", 'String'>
     readonly disembarkPort: FieldRef<"Itinerary", 'String'>
     readonly visitedPlaces: FieldRef<"Itinerary", 'String'>
-    readonly numberOfNights: FieldRef<"Itinerary", 'Int'>
+    readonly duration: FieldRef<"Itinerary", 'Int'>
     readonly pricePerPerson: FieldRef<"Itinerary", 'Float'>
     readonly shipName: FieldRef<"Itinerary", 'String'>
   }
@@ -4549,7 +4549,7 @@ export namespace Prisma {
     embarkPort: 'embarkPort',
     disembarkPort: 'disembarkPort',
     visitedPlaces: 'visitedPlaces',
-    numberOfNights: 'numberOfNights',
+    duration: 'duration',
     pricePerPerson: 'pricePerPerson',
     shipName: 'shipName'
   };
@@ -4683,7 +4683,7 @@ export namespace Prisma {
     embarkPort?: StringFilter<"Itinerary"> | string
     disembarkPort?: StringFilter<"Itinerary"> | string
     visitedPlaces?: StringFilter<"Itinerary"> | string
-    numberOfNights?: IntFilter<"Itinerary"> | number
+    duration?: IntFilter<"Itinerary"> | number
     pricePerPerson?: FloatFilter<"Itinerary"> | number
     shipName?: StringFilter<"Itinerary"> | string
     trips?: TripListRelationFilter
@@ -4695,7 +4695,7 @@ export namespace Prisma {
     embarkPort?: SortOrder
     disembarkPort?: SortOrder
     visitedPlaces?: SortOrder
-    numberOfNights?: SortOrder
+    duration?: SortOrder
     pricePerPerson?: SortOrder
     shipName?: SortOrder
     trips?: TripOrderByRelationAggregateInput
@@ -4710,7 +4710,7 @@ export namespace Prisma {
     embarkPort?: StringFilter<"Itinerary"> | string
     disembarkPort?: StringFilter<"Itinerary"> | string
     visitedPlaces?: StringFilter<"Itinerary"> | string
-    numberOfNights?: IntFilter<"Itinerary"> | number
+    duration?: IntFilter<"Itinerary"> | number
     pricePerPerson?: FloatFilter<"Itinerary"> | number
     shipName?: StringFilter<"Itinerary"> | string
     trips?: TripListRelationFilter
@@ -4722,7 +4722,7 @@ export namespace Prisma {
     embarkPort?: SortOrder
     disembarkPort?: SortOrder
     visitedPlaces?: SortOrder
-    numberOfNights?: SortOrder
+    duration?: SortOrder
     pricePerPerson?: SortOrder
     shipName?: SortOrder
     _count?: ItineraryCountOrderByAggregateInput
@@ -4741,7 +4741,7 @@ export namespace Prisma {
     embarkPort?: StringWithAggregatesFilter<"Itinerary"> | string
     disembarkPort?: StringWithAggregatesFilter<"Itinerary"> | string
     visitedPlaces?: StringWithAggregatesFilter<"Itinerary"> | string
-    numberOfNights?: IntWithAggregatesFilter<"Itinerary"> | number
+    duration?: IntWithAggregatesFilter<"Itinerary"> | number
     pricePerPerson?: FloatWithAggregatesFilter<"Itinerary"> | number
     shipName?: StringWithAggregatesFilter<"Itinerary"> | string
   }
@@ -4873,7 +4873,7 @@ export namespace Prisma {
     embarkPort: string
     disembarkPort: string
     visitedPlaces: string
-    numberOfNights: number
+    duration: number
     pricePerPerson: number
     shipName: string
     trips?: TripCreateNestedManyWithoutItineraryInput
@@ -4885,7 +4885,7 @@ export namespace Prisma {
     embarkPort: string
     disembarkPort: string
     visitedPlaces: string
-    numberOfNights: number
+    duration: number
     pricePerPerson: number
     shipName: string
     trips?: TripUncheckedCreateNestedManyWithoutItineraryInput
@@ -4896,7 +4896,7 @@ export namespace Prisma {
     embarkPort?: StringFieldUpdateOperationsInput | string
     disembarkPort?: StringFieldUpdateOperationsInput | string
     visitedPlaces?: StringFieldUpdateOperationsInput | string
-    numberOfNights?: IntFieldUpdateOperationsInput | number
+    duration?: IntFieldUpdateOperationsInput | number
     pricePerPerson?: FloatFieldUpdateOperationsInput | number
     shipName?: StringFieldUpdateOperationsInput | string
     trips?: TripUpdateManyWithoutItineraryNestedInput
@@ -4908,7 +4908,7 @@ export namespace Prisma {
     embarkPort?: StringFieldUpdateOperationsInput | string
     disembarkPort?: StringFieldUpdateOperationsInput | string
     visitedPlaces?: StringFieldUpdateOperationsInput | string
-    numberOfNights?: IntFieldUpdateOperationsInput | number
+    duration?: IntFieldUpdateOperationsInput | number
     pricePerPerson?: FloatFieldUpdateOperationsInput | number
     shipName?: StringFieldUpdateOperationsInput | string
     trips?: TripUncheckedUpdateManyWithoutItineraryNestedInput
@@ -4920,7 +4920,7 @@ export namespace Prisma {
     embarkPort: string
     disembarkPort: string
     visitedPlaces: string
-    numberOfNights: number
+    duration: number
     pricePerPerson: number
     shipName: string
   }
@@ -4930,7 +4930,7 @@ export namespace Prisma {
     embarkPort?: StringFieldUpdateOperationsInput | string
     disembarkPort?: StringFieldUpdateOperationsInput | string
     visitedPlaces?: StringFieldUpdateOperationsInput | string
-    numberOfNights?: IntFieldUpdateOperationsInput | number
+    duration?: IntFieldUpdateOperationsInput | number
     pricePerPerson?: FloatFieldUpdateOperationsInput | number
     shipName?: StringFieldUpdateOperationsInput | string
   }
@@ -4941,7 +4941,7 @@ export namespace Prisma {
     embarkPort?: StringFieldUpdateOperationsInput | string
     disembarkPort?: StringFieldUpdateOperationsInput | string
     visitedPlaces?: StringFieldUpdateOperationsInput | string
-    numberOfNights?: IntFieldUpdateOperationsInput | number
+    duration?: IntFieldUpdateOperationsInput | number
     pricePerPerson?: FloatFieldUpdateOperationsInput | number
     shipName?: StringFieldUpdateOperationsInput | string
   }
@@ -5114,14 +5114,14 @@ export namespace Prisma {
     embarkPort?: SortOrder
     disembarkPort?: SortOrder
     visitedPlaces?: SortOrder
-    numberOfNights?: SortOrder
+    duration?: SortOrder
     pricePerPerson?: SortOrder
     shipName?: SortOrder
   }
 
   export type ItineraryAvgOrderByAggregateInput = {
     id?: SortOrder
-    numberOfNights?: SortOrder
+    duration?: SortOrder
     pricePerPerson?: SortOrder
   }
 
@@ -5131,7 +5131,7 @@ export namespace Prisma {
     embarkPort?: SortOrder
     disembarkPort?: SortOrder
     visitedPlaces?: SortOrder
-    numberOfNights?: SortOrder
+    duration?: SortOrder
     pricePerPerson?: SortOrder
     shipName?: SortOrder
   }
@@ -5142,14 +5142,14 @@ export namespace Prisma {
     embarkPort?: SortOrder
     disembarkPort?: SortOrder
     visitedPlaces?: SortOrder
-    numberOfNights?: SortOrder
+    duration?: SortOrder
     pricePerPerson?: SortOrder
     shipName?: SortOrder
   }
 
   export type ItinerarySumOrderByAggregateInput = {
     id?: SortOrder
-    numberOfNights?: SortOrder
+    duration?: SortOrder
     pricePerPerson?: SortOrder
   }
 
@@ -5663,7 +5663,7 @@ export namespace Prisma {
     embarkPort: string
     disembarkPort: string
     visitedPlaces: string
-    numberOfNights: number
+    duration: number
     pricePerPerson: number
     shipName: string
   }
@@ -5674,7 +5674,7 @@ export namespace Prisma {
     embarkPort: string
     disembarkPort: string
     visitedPlaces: string
-    numberOfNights: number
+    duration: number
     pricePerPerson: number
     shipName: string
   }
@@ -5727,7 +5727,7 @@ export namespace Prisma {
     embarkPort?: StringFieldUpdateOperationsInput | string
     disembarkPort?: StringFieldUpdateOperationsInput | string
     visitedPlaces?: StringFieldUpdateOperationsInput | string
-    numberOfNights?: IntFieldUpdateOperationsInput | number
+    duration?: IntFieldUpdateOperationsInput | number
     pricePerPerson?: FloatFieldUpdateOperationsInput | number
     shipName?: StringFieldUpdateOperationsInput | string
   }
@@ -5738,7 +5738,7 @@ export namespace Prisma {
     embarkPort?: StringFieldUpdateOperationsInput | string
     disembarkPort?: StringFieldUpdateOperationsInput | string
     visitedPlaces?: StringFieldUpdateOperationsInput | string
-    numberOfNights?: IntFieldUpdateOperationsInput | number
+    duration?: IntFieldUpdateOperationsInput | number
     pricePerPerson?: FloatFieldUpdateOperationsInput | number
     shipName?: StringFieldUpdateOperationsInput | string
   }
