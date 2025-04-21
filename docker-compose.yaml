@@ -5,13 +5,26 @@ services:
     image: rabbitmq:3-management
     container_name: rabbitmq
     ports:
-      - "5672:5672" # AMQP protocol port
-      - "15672:15672" # Management UI port
+      - "5672:5672" # AMQP protocol
+      - "15672:15672" # RabbitMQ UI
     environment:
       RABBITMQ_DEFAULT_USER: par
       RABBITMQ_DEFAULT_PASS: impar
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
 
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: par
+      POSTGRES_PASSWORD: impar
+      POSTGRES_DB: cruzeiros_net
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
 volumes:
   rabbitmq_data:
+  postgres_data:
