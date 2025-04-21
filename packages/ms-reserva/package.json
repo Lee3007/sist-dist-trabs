@@ -1,7 +1,5 @@
 {
-  "scripts": {
-    "migrate:latest": "NODE_OPTIONS='--loader ts-node/esm' pnpm exec knex migrate:latest"
-  },
+  "scripts": {},
   "dependencies": {
     "@prisma/client": "^6.6.0",
     "amqplib": "^0.10.7",
