@@ -1,21 +1,43 @@
 {
-  "type": "module",
+  "name": "express-typescript-boilerplate",
+  "license": "MIT",
+  "main": "app.ts",
+  "private": true,
   "scripts": {
-    "start": "ts-node-dev --loader ts-node/esm --respawn --transpile-only src/app.ts"
+    "build": "tsup",
+    "start:dev": "tsx watch --clear-screen=false src/app.ts",
+    "start:prod": "node dist/index.js",
+    "test": "vitest run",
+    "test:cov": "vitest run --coverage",
+    "check": "pnpm lint && pnpm format && pnpm build && pnpm test"
   },
   "dependencies": {
-    "@prisma/client": "^6.6.0",
-    "amqplib": "^0.10.7",
-    "dotenv": "^16.5.0",
-    "express": "^5.1.0",
-    "pg": "^8.14.1",
-    "prisma": "^6.6.0"
+    "cors": "2.8.5",
+    "dotenv": "16.5.0",
+    "envalid": "8.0.0",
+    "express": "4.21.2"
   },
   "devDependencies": {
-    "@types/express": "^5.0.1",
-    "@types/node": "^22.14.1",
-    "ts-node": "^10.9.2",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.8.3"
-  }
+    "@types/amqplib": "^0.10.7",
+    "@types/cors": "2.8.17",
+    "@types/express": "5.0.1",
+    "amqplib": "^0.10.7",
+    "pino-pretty": "13.0.0",
+    "tsup": "8.4.0",
+    "tsx": "4.19.3",
+    "typescript": "5.8.3",
+    "vite-tsconfig-paths": "5.1.4",
+    "vitest": "3.1.1"
+  },
+  "tsup": {
+    "entry": [
+      "src",
+      "!src/**/__tests__/**",
+      "!src/**/*.test.*"
+    ],
+    "splitting": false,
+    "sourcemap": true,
+    "clean": true
+  },
+  "packageManager": "pnpm@10.8.1"
 }
