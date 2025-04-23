@@ -1,19 +1,14 @@
-import { startBookingsConsumer } from "./consumers/booking.consumer";
-import { approvePayment } from "./producers/approved-payment.producer";
-import { rejectPayment } from "./producers/rejected-payment.producer";
-import { initRabbitMQ } from "./queue";
+import { startBookingsConsumer } from "./booking-consumer";
+import { processPayment } from "./process-payment";
+import { initRabbitMQ } from "./rabbitmq";
 import { config } from "dotenv";
 
 config();
 await initRabbitMQ();
-await startBookingsConsumer(async (booking) => {
-  const shouldRejectPaymentForBooking = getRandomInt(2) === 0;
+await startBookingsConsumer(async (message) => {
+  const shouldApprovePayment = getRandomInt(2) === 0;
 
-  if (shouldRejectPaymentForBooking) {
-    await rejectPayment(booking);
-  } else {
-    await approvePayment(booking);
-  }
+  await processPayment(message, shouldApprovePayment)
 });
 
 function getRandomInt(max: number) {
