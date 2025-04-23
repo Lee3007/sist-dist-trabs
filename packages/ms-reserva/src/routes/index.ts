@@ -31,7 +31,20 @@ router.post("/booking", async (req: Request, res: Response) => {
 
   const booking = await createBookingUseCase.execute(bookingDetails);
 
-  res.status(201).json({ message: "Booking created", details: booking });
+  res.status(201).json({ message: "Booking created", ...booking });
+});
+
+router.get("/booking/:id", (req: Request, res: Response, next) => {
+  (async () => {
+    const bookingId = Number(req.params.id);
+    const booking = await bookingRepository.findById(bookingId);
+
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    res.json(booking);
+  })().catch(next);
 });
 
 export default router;

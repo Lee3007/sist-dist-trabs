@@ -7,7 +7,10 @@ export class BookingRepository {
   }
 
   async findById(id: number): Promise<Booking | null> {
-    return prisma.booking.findUnique({ where: { id } });
+    return prisma.booking.findUnique({
+      where: { id },
+      include: { trip: { include: { itinerary: true } } },
+    });
   }
 
   async findAll(): Promise<Booking[]> {

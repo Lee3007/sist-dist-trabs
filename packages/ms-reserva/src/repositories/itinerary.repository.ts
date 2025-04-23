@@ -30,8 +30,16 @@ export class ItineraryRepository {
     limit: number = 20
   ): Promise<(Itinerary & { trips: Trip[] })[]> {
     const skip = (page - 1) * limit;
+    // Build the where clause with "contains" for destination and embarkPort
+    const where: any = { ...filter };
+    if (filter.destination) {
+      where.destination = { contains: filter.destination, mode: "insensitive" };
+    }
+    if (filter.embarkPort) {
+      where.embarkPort = { contains: filter.embarkPort, mode: "insensitive" };
+    }
     return prisma.itinerary.findMany({
-      where: filter,
+      where,
       skip,
       take: limit,
       include: {

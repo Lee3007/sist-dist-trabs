@@ -24,7 +24,7 @@ export class CreateBookingUseCase {
     };
 
     const booking = await this.bookingRepository.create(newBooking);
-    const paymentLink = `https://payment-link.com/${booking.id}`;
+    const paymentLink = `http://localhost:5173/payment/${booking.id}`;
     this.bookingRepository.update(booking.id, {
       paymentLink,
     });
