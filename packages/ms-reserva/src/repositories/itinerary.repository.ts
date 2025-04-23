@@ -1,4 +1,4 @@
-import { Itinerary } from "@/models";
+import { Itinerary, Trip } from "@/models";
 import { prisma } from "../prisma";
 
 export class ItineraryRepository {
@@ -28,12 +28,15 @@ export class ItineraryRepository {
     filter: Partial<Itinerary>,
     page: number = 1,
     limit: number = 20
-  ): Promise<Itinerary[]> {
+  ): Promise<(Itinerary & { trips: Trip[] })[]> {
     const skip = (page - 1) * limit;
     return prisma.itinerary.findMany({
       where: filter,
       skip,
       take: limit,
+      include: {
+        trips: true,
+      },
     });
   }
 
