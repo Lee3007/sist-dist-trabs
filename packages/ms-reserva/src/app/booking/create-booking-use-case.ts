@@ -1,6 +1,6 @@
 import { Booking } from "@/models";
 import { BookingRepository } from "../../repositories/booking.repository";
-import { ItineraryRepository } from "@/repositories/itinerary.repository";
+import { sendBookingCreatedMessage } from "../producers/booking.producer";
 
 export interface CreateBookingDTO {
   tripId: number;
@@ -28,6 +28,10 @@ export class CreateBookingUseCase {
     this.bookingRepository.update(booking.id, {
       paymentLink,
     });
+
+    await sendBookingCreatedMessage(
+      JSON.stringify({ ...booking, paymentLink })
+    );
     return { paymentLink };
   }
 }

@@ -1,9 +1,9 @@
 import express from "express";
 import routes from "./routes"; // isso funciona com o alias
-import { initRabbitMQ } from "./queue";
-import { startPagamentoAprovadoConsumer } from "./consumers/pagamento-aprovado.consumer";
-import { startPagamentoRecusadoConsumer } from "./consumers/pagamento-recusado.consumer";
-import { startBilheteGeradoConsumer } from "./consumers/bilhete-gerado.consumer";
+import { initRabbitMQ } from "./rabbitmq";
+import { startPaymentApprovedConsumer } from "./consumers/payment-approved.consumer";
+import { startPaymentRejectedConsumer } from "./consumers/payment-rejected.consumer";
+import { startTicketGeneratedConsumer } from "./consumers/ticket-generated.consumer";
 
 const app = express();
 const port = 3000;
@@ -16,8 +16,8 @@ app.listen(port, async () => {
 
   await initRabbitMQ();
 
-  await startPagamentoAprovadoConsumer();
-  await startPagamentoRecusadoConsumer();
-  await startBilheteGeradoConsumer();
-  console.log("✅ All consumers started successfully.");
+  await startPaymentApprovedConsumer();
+  await startPaymentRejectedConsumer();
+  await startTicketGeneratedConsumer();
+  console.log("✅ All consumers started successfully.\n\n");
 });
