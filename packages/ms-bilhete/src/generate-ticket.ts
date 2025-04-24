@@ -1,14 +1,13 @@
-import { getChannel, EXCHANGES } from './rabbitmq';
+import { getChannel, EXCHANGES } from "./rabbitmq";
 
 export async function generateTicket(ticket: any) {
   const ch = getChannel();
-  
-  ch.publish(
-    EXCHANGES.TICKET, 
-    '',
-    Buffer.from(JSON.stringify(ticket)),
-    { persistent: true }
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+  ch.publish(EXCHANGES.TICKET, "", Buffer.from(JSON.stringify(ticket)), {
+    persistent: true,
+  });
+
+  console.log(
+    `[📤] Published ticket generated event for ticket ID: ${ticket.id}`
   );
-  
-  console.log(`[📤] Published ticket generated event for ticket ID: ${ticket.id}`);
 }

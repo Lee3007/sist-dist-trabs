@@ -1,12 +1,21 @@
-import crypto from 'crypto';
-import fs from 'fs';
+import crypto from "crypto";
+import fs from "fs";
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
 
-export async function verifySignature(message: string, signature: string): Promise<boolean> {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+export function verifySignature(message: string, signature: string): boolean {
   try {
-    const publicKey = fs.readFileSync("../../sso/payments_pub.pem", 'utf8');
-    const verify = crypto.createVerify('SHA256');
+    const publicKeyPath = path.resolve(__dirname, "../../sso/payments_pub.pem");
+    const publicKey = fs.readFileSync(publicKeyPath, "utf8");
+    if (!publicKey) {
+      throw new Error("Public key not initialized");
+    }
+    const verify = crypto.createVerify("SHA256");
     verify.update(message);
-    return verify.verify(publicKey, signature, 'base64');
+    return verify.verify(publicKey, signature, "base64");
   } catch (error) {
     console.error(`[❌] Error verifying signature: ${error}`);
     return false;
