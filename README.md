@@ -1,2 +1,2 @@
-# sist-dist-trab2
-Trabalho 2 de Sistemas Distribuídos
+# sist-dist-trabs
+Trabalhos de Sistemas Distribuídos
