@@ -5,6 +5,9 @@ class Peer:
     def __init__(self, name):
         self.name = name
 
+ns = locate_ns()
+print(ns.list())
+
 def start_peer(name):
     peer = Peer(name)
     daemon = Daemon()
@@ -31,6 +34,6 @@ def start_peer(name):
     print(f"Peer {name} ativo. URI: {uri}")
     daemon.requestLoop()
 
-start_peer("Peer_Lee")
+# start_peer("Peer_Lee")
 
 # PYRO:obj_a166c4ca4d1c4445ab79edf118604404@localhost:49205
