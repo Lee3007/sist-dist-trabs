@@ -156,15 +156,6 @@ class Peer:
     def get_remote_files(self):
         return dict(sorted(self.peers_files.items()))
 
-    @tracker_only
-    @expose
-    def get_file_availability(self, file_name):
-        available_peers = []
-        for peer_name, files in self.peers_files.items():
-            if file_name in files:
-                available_peers.append(peer_name)
-        return available_peers
-
     @expose
     def get_file(self, file_name):
         if file_name in self.files:
@@ -232,7 +223,6 @@ def start_peer(name):
     peer.uri = uri
 
     ns = locate_ns()
-    peer.name_server = ns
     ns.register(name, uri)
 
     trackers = [k for k in ns.list().keys() if k.startswith("Tracker_Epoca_")]
