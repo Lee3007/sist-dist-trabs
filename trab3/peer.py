@@ -208,7 +208,6 @@ class Peer:
         puri = name_server.lookup(peer_name)
         peer = Proxy(puri)
         file_data = base64.b64decode(peer.get_file(file_name)["data"])
-        print("file_data: ", file_data)
         if file_data:
             folder = f"files_{self.name}"
             os.makedirs(folder, exist_ok=True)
