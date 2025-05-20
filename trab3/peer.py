@@ -187,8 +187,6 @@ class Peer:
         def monitor():
             while True:
                 time.sleep(0.05)
-                if not self.last_heartbeat:
-                    return
                 if time.time() - self.last_heartbeat > self.heartbeat_timeout:
                     print("FALHA DETECTADA NO TRACKER!")
                     self.start_candidacy()
@@ -243,6 +241,7 @@ def start_peer(name):
         peer.tracker_uri = ns.lookup(latest)
         peer.epoch = int(latest.split("_")[-1])
         print(f"[INFO] Tracker encontrado: {latest}")
+        peer.last_heartbeat = time.time()
         peer.start_monitoring_heartbeat()
         peer.update_files_on_tracker()
     else:
