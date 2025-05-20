@@ -22,7 +22,7 @@ class PeerInterface:
         self.update_tracker_proxy()
 
         self.root = tk.Tk()
-        self.root.title(f"Peer Interface - {peer_name} {'(Tracker)' if self.peer_proxy.get_is_tracker() else ''}")
+        self.root.title(f"Peer Interface - {peer_name}")
         self.root.geometry("600x400")
         self.update_window_title()
 
@@ -61,7 +61,7 @@ class PeerInterface:
             is_tracker = self.peer_proxy.get_is_tracker()
         except Exception:
             is_tracker = False
-        title = f"Peer Interface - {self.peer_name} {'(Tracker)' if is_tracker else ''}"
+        title = f"Peer Interface - {self.peer_name} {f'(Tracker Epoca {self.peer_proxy.get_epoch()})'if is_tracker else ''}"
         self.root.title(title)
         self.root.after(500, self.update_window_title)  # update every 2 seconds
 
@@ -160,11 +160,10 @@ def main():
         p1 = Process(target=start_peer, args=(peer_name,))
         p1.start()
         processes.append(p1)
-        PEER_PROCESSES[peer_name] = p1
-        print(PEER_PROCESSES)
+        PEER_PROCESSES[peer_name] = p1.pid
         sleep(2)
     for peer_name in PEER_NAMES:
-        p2 = Process(target=start_interface, args=(peer_name, PEER_PROCESSES[peer_name].pid,))
+        p2 = Process(target=start_interface, args=(peer_name, PEER_PROCESSES[peer_name],))
         p2.start()
         processes.append(p2)    
     
@@ -173,5 +172,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# python -m Pyro5.nameserver

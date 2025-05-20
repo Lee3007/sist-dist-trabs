@@ -13,7 +13,7 @@ class Peer:
         self.name = name
         self.uri = None
         self.tracker_uri = None
-        self.epoch = 0
+        self.epoch = -1
         self.files = []
 
         # Election
@@ -43,7 +43,6 @@ class Peer:
                         method(*args, **kwargs)
                 except Exception as e:
                     continue
-                    # print(f"[ERROR] {self.name} não conseguiu chamar {method_name} em {pname}: {e}")
     
     def tracker_only(func):
         @wraps(func)
@@ -57,59 +56,54 @@ class Peer:
 
     # ############################# Election #############################
     def start_candidacy(self):
-            epoch = self.epoch
-            print("epoch")
-            print(epoch)
+            self.epoch += 1
             time.sleep(random.uniform(0.5, 2.0))
-            if self.voted_for_epoch == epoch:
+            if self.voted_for_epoch == self.epoch:
                 print(f"[INFO] {self.name} já votou. Não pode se candidatar.")
                 self.start_monitoring_heartbeat()
                 return
             self.is_candidate = True
-            self.voted_for_epoch = epoch
+            self.voted_for_epoch = self.epoch
             self.votes.append(self.name)
             print(f"[INFO] {self.name} foi nomeado como candidato.")
-            self.notify_candidacy()
-
-    def notify_candidacy(self):
-        name_server = locate_ns()
-        peer_count = 0
-        all_peers = name_server.list(prefix="Peer")
-        for pname, puri in all_peers.items():
-            try:
-                if pname != self.name:
-                    peer_proxy = Proxy(puri)
-                    voted = peer_proxy.ask_for_vote(self.name, self.epoch)
-                    if voted:
-                        print(f"[INFO] {self.name} recebeu voto de {pname}.")
-                        self.votes.append(pname)
-                    else:
-                        print(f"[INFO] {self.name} não recebeu voto de {pname}.")
-                peer_count += 1
-            except Exception as e:
-                print(f"[ERROR] {self.name} não conseguiu notificar {pname}: {e}")
-        print(f"[INFO] {self.name} notificou todos os peers sobre sua candidatura.")
-
-        if len(self.votes) > peer_count / 2:
-            print(f"[INFO] {self.name} foi eleito como tracker.")
-            self.is_tracker = True
-            tracker_name = f"Tracker_Epoca_{self.epoch}"
             name_server = locate_ns()
-            name_server.register(tracker_name, self.uri)
-            self.is_candidate = False
-            self.votes = []
-            self.voted_for_epoch = self.epoch
-            self.peers_files = {
-                self.name: self.get_local_files()
-            }
-            self.start_sending_heartbeat()
-            self.call_on_all_peers("notify_election_result", self.uri, self.epoch)
-            self.epoch += 1
+            peer_count = 0
+            all_peers = name_server.list(prefix="Peer")
+            for pname, puri in all_peers.items():
+                try:
+                    if pname != self.name:
+                        peer_proxy = Proxy(puri)
+                        voted = peer_proxy.ask_for_vote(self.name, self.epoch)
+                        if voted:
+                            self.votes.append(pname)
+                        else:
+                            print(f"[INFO] {self.name} não recebeu voto de {pname}.")
+                    peer_count += 1
+                except Exception as e:
+                    print(f"[ERROR] {self.name} não conseguiu notificar {pname}: {e}")
+            print(f"[INFO] {self.name} notificou todos os peers sobre sua candidatura.")
+
+            if len(self.votes) > peer_count / 2:
+                print(f"[INFO] {self.name} foi eleito como tracker.")
+                self.is_tracker = True
+                tracker_name = f"Tracker_Epoca_{self.epoch}"
+                name_server = locate_ns()
+                name_server.register(tracker_name, self.uri)
+                self.is_candidate = False
+                self.votes = []
+                self.voted_for_epoch = self.epoch
+                self.files = self.get_local_files()
+                self.peers_files = {
+                    self.name: self.get_local_files()
+                }
+                self.start_sending_heartbeat()
+                self.call_on_all_peers("notify_election_result", self.uri)
 
     @expose
     def ask_for_vote(self, candidate_name, epoch):
         print(f"[INFO] {self.name} recebeu notificação de candidatura de {candidate_name}.")
         if not self.is_candidate and self.voted_for_epoch != epoch:
+            self.epoch = epoch
             self.voted_for_epoch = epoch
             print(f"[INFO] {self.name} votou em {candidate_name}.")
             return True
@@ -117,18 +111,13 @@ class Peer:
     
     @expose
     @oneway
-    def notify_election_result(self, elected_uri, epoch):
-        if epoch >= self.epoch:
-            print(f"[INFO] {self.name} recebeu o resultado da eleição: {elected_uri} é o novo tracker.")
-            self.is_candidate = False
-            self.votes = []
-            self.tracker_uri = elected_uri
-            self.epoch = epoch
-            self.epoch += 1
-            tracker = Proxy(elected_uri)
-            self.files = self.get_local_files()
-            self.last_heartbeat = time.time()
-            tracker.update_files(self.name, self.files)
+    def notify_election_result(self, elected_uri):
+        print(f"[INFO] {self.name} recebeu o resultado da eleição: {elected_uri} é o novo tracker.")
+        self.is_candidate = False
+        self.votes = []
+        self.tracker_uri = elected_uri
+        self.last_heartbeat = time.time()
+        self.update_files_on_tracker()
 
     
     # ############################# Tracker #############################
@@ -140,7 +129,6 @@ class Peer:
 
     def update_files_on_tracker(self):
         self.files = self.get_local_files()
-        print(self.files)
         if self.tracker_uri:
             tracker = Proxy(self.tracker_uri)
             tracker.update_files(self.name, self.files)
@@ -150,6 +138,10 @@ class Peer:
     @expose
     def get_is_tracker(self):
         return self.is_tracker
+
+    @expose
+    def get_epoch(self):
+        return self.epoch
 
     @tracker_only
     @expose
@@ -162,7 +154,7 @@ class Peer:
     @tracker_only
     @expose
     def get_remote_files(self):
-        return self.peers_files
+        return dict(sorted(self.peers_files.items()))
 
     @tracker_only
     @expose
@@ -180,9 +172,7 @@ class Peer:
             file_path = os.path.join(folder, file_name)
             if os.path.exists(file_path):
                 with open(file_path, "rb") as f:
-                    a = f.read()
-                    print("a: ", a)
-                    return a
+                    return f.read()
         else:
             print(f"[ERROR] {self.name} não possui o arquivo {file_name}.")
 
@@ -192,7 +182,6 @@ class Peer:
     @oneway
     def heartbeat(self):
         self.last_heartbeat = time.time()
-        print(f"[INFO] {self.name} recebeu um heartbeat.")
 
     def start_monitoring_heartbeat(self):
         def monitor():
