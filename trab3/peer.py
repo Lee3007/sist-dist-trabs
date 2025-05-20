@@ -43,7 +43,7 @@ class Peer:
                         method(*args, **kwargs)
                 except Exception as e:
                     continue
-    
+
     def tracker_only(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
@@ -108,7 +108,7 @@ class Peer:
             print(f"[INFO] {self.name} votou em {candidate_name}.")
             return True
         return False
-    
+
     @expose
     @oneway
     def notify_election_result(self, elected_uri):
@@ -119,7 +119,7 @@ class Peer:
         self.last_heartbeat = time.time()
         self.update_files_on_tracker()
 
-    
+
     # ############################# Tracker #############################
     def get_local_files(self):
         folder = f"files_{self.name}"
@@ -192,7 +192,7 @@ class Peer:
                     self.start_candidacy()
                     break
         threading.Thread(target=monitor, daemon=True).start()
-    
+
     @tracker_only
     def start_sending_heartbeat(self):
         def send():
@@ -216,14 +216,14 @@ class Peer:
                 f.write(file_data)
             if self.is_tracker:
                 self.files = self.get_local_files()
-                self.peers_files[peer_name] = self.files
+                self.peers_files[self.name] = self.files
             else:
                 self.update_files_on_tracker()
             print(f"[INFO] {self.name} baixou o arquivo {file_name} de {peer_name}.")
         else:
             print(f"[ERROR] {self.name} não conseguiu baixar o arquivo {file_name} de {peer_name}.")
 
-    
+
 def start_peer(name):
     peer = Peer(name)
 
