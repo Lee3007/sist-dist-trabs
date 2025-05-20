@@ -215,7 +215,8 @@ class Peer:
             with open(file_path, "wb") as f:
                 f.write(file_data)
             if self.is_tracker:
-                self.peers_files[peer_name] = list(set(self.peers_files.get(peer_name, []) + [file_name]))
+                self.files = self.get_local_files()
+                self.peers_files[peer_name] = self.files
             else:
                 self.update_files_on_tracker()
             print(f"[INFO] {self.name} baixou o arquivo {file_name} de {peer_name}.")
