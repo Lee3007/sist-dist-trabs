@@ -5,6 +5,7 @@ import time
 import random
 import os
 import uuid
+import base64
 
 @behavior(instance_mode="single")
 class Peer:
@@ -57,6 +58,8 @@ class Peer:
     # ############################# Election #############################
     def start_candidacy(self):
             epoch = self.epoch
+            print("epoch")
+            print(epoch)
             time.sleep(random.uniform(0.5, 2.0))
             if self.voted_for_epoch == epoch:
                 print(f"[INFO] {self.name} já votou. Não pode se candidatar.")
@@ -124,6 +127,7 @@ class Peer:
             self.epoch += 1
             tracker = Proxy(elected_uri)
             self.files = self.get_local_files()
+            self.last_heartbeat = time.time()
             tracker.update_files(self.name, self.files)
 
     
@@ -143,6 +147,10 @@ class Peer:
         else:
             print("[INFO] Nenhum tracker encontrado. Não é possível registrar arquivos.")
 
+    @expose
+    def get_is_tracker(self):
+        return self.is_tracker
+
     @tracker_only
     @expose
     def update_files(self, peer_name, files):
@@ -150,6 +158,11 @@ class Peer:
             self.peers_files[peer_name] = []
         self.peers_files[peer_name] = list(set(self.peers_files.get(peer_name, []) + files))
         print(f"[INFO] Tracker teve os arquivos atualizados: {self.peers_files}")
+
+    @tracker_only
+    @expose
+    def get_remote_files(self):
+        return self.peers_files
 
     @tracker_only
     @expose
@@ -167,7 +180,9 @@ class Peer:
             file_path = os.path.join(folder, file_name)
             if os.path.exists(file_path):
                 with open(file_path, "rb") as f:
-                    return f.read()
+                    a = f.read()
+                    print("a: ", a)
+                    return a
         else:
             print(f"[ERROR] {self.name} não possui o arquivo {file_name}.")
 
@@ -203,7 +218,8 @@ class Peer:
         name_server = locate_ns()
         puri = name_server.lookup(peer_name)
         peer = Proxy(puri)
-        file_data = peer.get_file(file_name)
+        file_data = base64.b64decode(peer.get_file(file_name)["data"])
+        print("file_data: ", file_data)
         if file_data:
             folder = f"files_{self.name}"
             os.makedirs(folder, exist_ok=True)
