@@ -186,8 +186,10 @@ class Peer:
     def start_monitoring_heartbeat(self):
         def monitor():
             while True:
-                time.sleep(self.heartbeat_timeout)
-                if not self.last_heartbeat or time.time() - self.last_heartbeat > self.heartbeat_timeout:
+                time.sleep(0.05)
+                if not self.last_heartbeat:
+                    return
+                if time.time() - self.last_heartbeat > self.heartbeat_timeout:
                     print("FALHA DETECTADA NO TRACKER!")
                     self.start_candidacy()
                     break
@@ -215,7 +217,10 @@ class Peer:
             file_path = os.path.join(folder, file_name)
             with open(file_path, "wb") as f:
                 f.write(file_data)
-            self.update_files_on_tracker()
+            if self.is_tracker:
+                self.peers_files[peer_name] = list(set(self.peers_files.get(peer_name, []) + [file_name]))
+            else:
+                self.update_files_on_tracker()
             print(f"[INFO] {self.name} baixou o arquivo {file_name} de {peer_name}.")
         else:
             print(f"[ERROR] {self.name} não conseguiu baixar o arquivo {file_name} de {peer_name}.")
