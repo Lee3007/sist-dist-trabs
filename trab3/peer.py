@@ -104,7 +104,7 @@ class Peer:
     def ask_for_vote(self, candidate_name, epoch):
         print(f"[INFO] {self.name} recebeu notificação de candidatura de {candidate_name}. Em época {epoch}.")
         if not self.is_candidate and self.voted_for_epoch != epoch:
-            self.epoch = epoch
+            # self.epoch = epoch
             self.voted_for_epoch = epoch
             print(f"[INFO] {self.name} votou em {candidate_name}. Voted for epoch {self.voted_for_epoch}.")
             return True
