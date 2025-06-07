@@ -1,0 +1,41 @@
+{
+  "name": "ms-pagamento",
+  "license": "MIT",
+  "main": "app.ts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsup",
+    "start:dev": "tsx watch --clear-screen=false src/app.ts",
+    "start:prod": "node dist/index.js",
+    "test": "vitest run",
+    "test:cov": "vitest run --coverage",
+    "check": "pnpm lint && pnpm format && pnpm build && pnpm test"
+  },
+  "tsup": {
+    "entry": [
+      "src",
+      "!src/**/__tests__/**",
+      "!src/**/*.test.*"
+    ],
+    "splitting": false,
+    "sourcemap": true,
+    "clean": true
+  },
+  "packageManager": "pnpm@10.8.1",
+  "dependencies": {
+    "amqplib": "^0.10.7",
+    "dotenv": "16.5.0",
+    "envalid": "8.0.0"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.10.7",
+    "@types/cors": "2.8.17",
+    "@types/node": "^22.14.1",
+    "tsup": "8.4.0",
+    "tsx": "4.19.3",
+    "typescript": "5.8.3",
+    "vite-tsconfig-paths": "5.1.4",
+    "vitest": "3.1.1"
+  }
+}

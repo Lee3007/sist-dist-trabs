@@ -1,0 +1,17 @@
+meta {
+  name: List Itineraries
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:3000/itineraries
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~destination: Maldivas
+  ~departureDate: 2025-04-20
+  ~embarkPort: Porto 64
+}

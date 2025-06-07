@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Trab2-SistDist",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
