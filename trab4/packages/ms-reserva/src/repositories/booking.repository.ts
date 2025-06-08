@@ -40,6 +40,12 @@ export class BookingRepository {
     });
   }
 
+  async findManyByEmail(email: string): Promise<Booking[]> {
+    return prisma.booking.findMany({
+      where: { email },
+    });
+  }
+
   async delete(id: number): Promise<Booking> {
     return prisma.booking.delete({ where: { id } });
   }

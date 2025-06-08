@@ -34,16 +34,18 @@ router.post("/booking", async (req: Request, res: Response) => {
   res.status(201).json({ message: "Booking created", ...booking });
 });
 
-router.get("/booking/:id", (req: Request, res: Response, next) => {
+router.get("/booking/:email", (req: Request, res: Response, next) => {
   (async () => {
-    const bookingId = Number(req.params.id);
-    const booking = await bookingRepository.findById(bookingId);
-
-    if (!booking) {
-      return res.status(404).json({ message: "Booking not found" });
+    const email = req.params.email as string;
+    if (!email) {
+      return res
+        .status(400)
+        .json({ message: "Email query parameter is required" });
     }
 
-    res.json(booking);
+    const bookings = await bookingRepository.findManyByEmail(email);
+
+    res.json(bookings);
   })().catch(next);
 });
 

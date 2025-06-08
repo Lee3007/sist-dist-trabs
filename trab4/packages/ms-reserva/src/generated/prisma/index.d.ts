@@ -3427,6 +3427,7 @@ export namespace Prisma {
 
   export type BookingMinAggregateOutputType = {
     id: number | null
+    email: string | null
     tripId: number | null
     numPassengers: number | null
     numCabins: number | null
@@ -3437,6 +3438,7 @@ export namespace Prisma {
 
   export type BookingMaxAggregateOutputType = {
     id: number | null
+    email: string | null
     tripId: number | null
     numPassengers: number | null
     numCabins: number | null
@@ -3447,6 +3449,7 @@ export namespace Prisma {
 
   export type BookingCountAggregateOutputType = {
     id: number
+    email: number
     tripId: number
     numPassengers: number
     numCabins: number
@@ -3473,6 +3476,7 @@ export namespace Prisma {
 
   export type BookingMinAggregateInputType = {
     id?: true
+    email?: true
     tripId?: true
     numPassengers?: true
     numCabins?: true
@@ -3483,6 +3487,7 @@ export namespace Prisma {
 
   export type BookingMaxAggregateInputType = {
     id?: true
+    email?: true
     tripId?: true
     numPassengers?: true
     numCabins?: true
@@ -3493,6 +3498,7 @@ export namespace Prisma {
 
   export type BookingCountAggregateInputType = {
     id?: true
+    email?: true
     tripId?: true
     numPassengers?: true
     numCabins?: true
@@ -3590,6 +3596,7 @@ export namespace Prisma {
 
   export type BookingGroupByOutputType = {
     id: number
+    email: string
     tripId: number
     numPassengers: number
     numCabins: number
@@ -3619,6 +3626,7 @@ export namespace Prisma {
 
   export type BookingSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    email?: boolean
     tripId?: boolean
     numPassengers?: boolean
     numCabins?: boolean
@@ -3630,6 +3638,7 @@ export namespace Prisma {
 
   export type BookingSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    email?: boolean
     tripId?: boolean
     numPassengers?: boolean
     numCabins?: boolean
@@ -3641,6 +3650,7 @@ export namespace Prisma {
 
   export type BookingSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    email?: boolean
     tripId?: boolean
     numPassengers?: boolean
     numCabins?: boolean
@@ -3652,6 +3662,7 @@ export namespace Prisma {
 
   export type BookingSelectScalar = {
     id?: boolean
+    email?: boolean
     tripId?: boolean
     numPassengers?: boolean
     numCabins?: boolean
@@ -3660,7 +3671,7 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type BookingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tripId" | "numPassengers" | "numCabins" | "paymentLink" | "status" | "createdAt", ExtArgs["result"]["booking"]>
+  export type BookingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "tripId" | "numPassengers" | "numCabins" | "paymentLink" | "status" | "createdAt", ExtArgs["result"]["booking"]>
   export type BookingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     trip?: boolean | TripDefaultArgs<ExtArgs>
   }
@@ -3678,6 +3689,7 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
+      email: string
       tripId: number
       numPassengers: number
       numCabins: number
@@ -4109,6 +4121,7 @@ export namespace Prisma {
    */
   interface BookingFieldRefs {
     readonly id: FieldRef<"Booking", 'Int'>
+    readonly email: FieldRef<"Booking", 'String'>
     readonly tripId: FieldRef<"Booking", 'Int'>
     readonly numPassengers: FieldRef<"Booking", 'Int'>
     readonly numCabins: FieldRef<"Booking", 'Int'>
@@ -4569,6 +4582,7 @@ export namespace Prisma {
 
   export const BookingScalarFieldEnum: {
     id: 'id',
+    email: 'email',
     tripId: 'tripId',
     numPassengers: 'numPassengers',
     numCabins: 'numCabins',
@@ -4806,6 +4820,7 @@ export namespace Prisma {
     OR?: BookingWhereInput[]
     NOT?: BookingWhereInput | BookingWhereInput[]
     id?: IntFilter<"Booking"> | number
+    email?: StringFilter<"Booking"> | string
     tripId?: IntFilter<"Booking"> | number
     numPassengers?: IntFilter<"Booking"> | number
     numCabins?: IntFilter<"Booking"> | number
@@ -4817,6 +4832,7 @@ export namespace Prisma {
 
   export type BookingOrderByWithRelationInput = {
     id?: SortOrder
+    email?: SortOrder
     tripId?: SortOrder
     numPassengers?: SortOrder
     numCabins?: SortOrder
@@ -4831,6 +4847,7 @@ export namespace Prisma {
     AND?: BookingWhereInput | BookingWhereInput[]
     OR?: BookingWhereInput[]
     NOT?: BookingWhereInput | BookingWhereInput[]
+    email?: StringFilter<"Booking"> | string
     tripId?: IntFilter<"Booking"> | number
     numPassengers?: IntFilter<"Booking"> | number
     numCabins?: IntFilter<"Booking"> | number
@@ -4842,6 +4859,7 @@ export namespace Prisma {
 
   export type BookingOrderByWithAggregationInput = {
     id?: SortOrder
+    email?: SortOrder
     tripId?: SortOrder
     numPassengers?: SortOrder
     numCabins?: SortOrder
@@ -4860,6 +4878,7 @@ export namespace Prisma {
     OR?: BookingScalarWhereWithAggregatesInput[]
     NOT?: BookingScalarWhereWithAggregatesInput | BookingScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Booking"> | number
+    email?: StringWithAggregatesFilter<"Booking"> | string
     tripId?: IntWithAggregatesFilter<"Booking"> | number
     numPassengers?: IntWithAggregatesFilter<"Booking"> | number
     numCabins?: IntWithAggregatesFilter<"Booking"> | number
@@ -4996,6 +5015,7 @@ export namespace Prisma {
   }
 
   export type BookingCreateInput = {
+    email: string
     numPassengers: number
     numCabins: number
     paymentLink: string
@@ -5006,6 +5026,7 @@ export namespace Prisma {
 
   export type BookingUncheckedCreateInput = {
     id?: number
+    email: string
     tripId: number
     numPassengers: number
     numCabins: number
@@ -5015,6 +5036,7 @@ export namespace Prisma {
   }
 
   export type BookingUpdateInput = {
+    email?: StringFieldUpdateOperationsInput | string
     numPassengers?: IntFieldUpdateOperationsInput | number
     numCabins?: IntFieldUpdateOperationsInput | number
     paymentLink?: StringFieldUpdateOperationsInput | string
@@ -5025,6 +5047,7 @@ export namespace Prisma {
 
   export type BookingUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
     tripId?: IntFieldUpdateOperationsInput | number
     numPassengers?: IntFieldUpdateOperationsInput | number
     numCabins?: IntFieldUpdateOperationsInput | number
@@ -5035,6 +5058,7 @@ export namespace Prisma {
 
   export type BookingCreateManyInput = {
     id?: number
+    email: string
     tripId: number
     numPassengers: number
     numCabins: number
@@ -5044,6 +5068,7 @@ export namespace Prisma {
   }
 
   export type BookingUpdateManyMutationInput = {
+    email?: StringFieldUpdateOperationsInput | string
     numPassengers?: IntFieldUpdateOperationsInput | number
     numCabins?: IntFieldUpdateOperationsInput | number
     paymentLink?: StringFieldUpdateOperationsInput | string
@@ -5053,6 +5078,7 @@ export namespace Prisma {
 
   export type BookingUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
     tripId?: IntFieldUpdateOperationsInput | number
     numPassengers?: IntFieldUpdateOperationsInput | number
     numCabins?: IntFieldUpdateOperationsInput | number
@@ -5290,6 +5316,7 @@ export namespace Prisma {
 
   export type BookingCountOrderByAggregateInput = {
     id?: SortOrder
+    email?: SortOrder
     tripId?: SortOrder
     numPassengers?: SortOrder
     numCabins?: SortOrder
@@ -5307,6 +5334,7 @@ export namespace Prisma {
 
   export type BookingMaxOrderByAggregateInput = {
     id?: SortOrder
+    email?: SortOrder
     tripId?: SortOrder
     numPassengers?: SortOrder
     numCabins?: SortOrder
@@ -5317,6 +5345,7 @@ export namespace Prisma {
 
   export type BookingMinOrderByAggregateInput = {
     id?: SortOrder
+    email?: SortOrder
     tripId?: SortOrder
     numPassengers?: SortOrder
     numCabins?: SortOrder
@@ -5685,6 +5714,7 @@ export namespace Prisma {
   }
 
   export type BookingCreateWithoutTripInput = {
+    email: string
     numPassengers: number
     numCabins: number
     paymentLink: string
@@ -5694,6 +5724,7 @@ export namespace Prisma {
 
   export type BookingUncheckedCreateWithoutTripInput = {
     id?: number
+    email: string
     numPassengers: number
     numCabins: number
     paymentLink: string
@@ -5764,6 +5795,7 @@ export namespace Prisma {
     OR?: BookingScalarWhereInput[]
     NOT?: BookingScalarWhereInput | BookingScalarWhereInput[]
     id?: IntFilter<"Booking"> | number
+    email?: StringFilter<"Booking"> | string
     tripId?: IntFilter<"Booking"> | number
     numPassengers?: IntFilter<"Booking"> | number
     numCabins?: IntFilter<"Booking"> | number
@@ -5841,6 +5873,7 @@ export namespace Prisma {
 
   export type BookingCreateManyTripInput = {
     id?: number
+    email: string
     numPassengers: number
     numCabins: number
     paymentLink: string
@@ -5849,6 +5882,7 @@ export namespace Prisma {
   }
 
   export type BookingUpdateWithoutTripInput = {
+    email?: StringFieldUpdateOperationsInput | string
     numPassengers?: IntFieldUpdateOperationsInput | number
     numCabins?: IntFieldUpdateOperationsInput | number
     paymentLink?: StringFieldUpdateOperationsInput | string
@@ -5858,6 +5892,7 @@ export namespace Prisma {
 
   export type BookingUncheckedUpdateWithoutTripInput = {
     id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
     numPassengers?: IntFieldUpdateOperationsInput | number
     numCabins?: IntFieldUpdateOperationsInput | number
     paymentLink?: StringFieldUpdateOperationsInput | string
@@ -5867,6 +5902,7 @@ export namespace Prisma {
 
   export type BookingUncheckedUpdateManyWithoutTripInput = {
     id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
     numPassengers?: IntFieldUpdateOperationsInput | number
     numCabins?: IntFieldUpdateOperationsInput | number
     paymentLink?: StringFieldUpdateOperationsInput | string

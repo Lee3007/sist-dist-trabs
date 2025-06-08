@@ -43,6 +43,7 @@ model Trip {
 
 model Booking {
   id            Int           @id @default(autoincrement()) @map("id")
+  email         String        @map("email")
   tripId        Int           @map("trip_id")
   numPassengers Int           @map("num_passengers")
   numCabins     Int           @map("num_cabins")

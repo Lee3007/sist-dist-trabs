@@ -137,6 +137,7 @@ exports.Prisma.TripScalarFieldEnum = {
 
 exports.Prisma.BookingScalarFieldEnum = {
   id: 'id',
+  email: 'email',
   tripId: 'tripId',
   numPassengers: 'numPassengers',
   numCabins: 'numCabins',

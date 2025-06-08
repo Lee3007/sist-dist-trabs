@@ -2,7 +2,7 @@ import axios from "axios";
 
 interface ListItinerariesParams {
   destination?: string;
-  departureDate?: string;
+  departureDate?: string; // like 2025-04-20
   embarkPort?: string;
 }
 
