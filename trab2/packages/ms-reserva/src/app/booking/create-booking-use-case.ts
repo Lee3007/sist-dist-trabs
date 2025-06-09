@@ -6,6 +6,7 @@ export interface CreateBookingDTO {
   tripId: number;
   numPassengers: number;
   numCabins: number;
+  email: string;
 }
 
 export interface CreateBookingResponse {
