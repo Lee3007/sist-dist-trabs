@@ -36,6 +36,47 @@ async def sse_notifications_stream() -> AsyncGenerator[str, None]:
         else:
             await asyncio.sleep(1)
 
+@ui.page('/booking/{booking_id}')
+async def booking_details_page(booking_id: int):
+
+    ui.label(f'Detalhes da Reserva #{booking_id}').classes('text-h4')
+
+    api_url = f"http://localhost:3000/booking/details/{booking_id}" # exemplo
+    
+    try:
+        await asyncio.sleep(0.5)
+        booking_data = {
+            "id": booking_id,
+            "email": app.storage.user.get('email'),
+            "tripId": random.randint(1, 4),
+            "numPassengers": random.randint(1, 4),
+            "numCabins": random.randint(1, 2),
+            "paymentLink": "http://localhost:5173/payment/1",
+            "status": "PENDING",
+            "createdAt": datetime.now().isoformat(),
+            "shipName": "Stardust Crusader",
+            "destination": "Creta"
+        }
+        
+        with ui.card().classes('w-full'):
+            ui.label('Resumo da Reserva').classes('text-h6')
+            ui.markdown(f"""
+                - **Navio:** {booking_data.get('shipName', 'N/A')}
+                - **Destino:** {booking_data.get('destination', 'N/A')}
+                - **Status:** {booking_data.get('status', 'N/A')}
+                - **Passageiros:** {booking_data.get('numPassengers', 'N/A')}
+                - **Cabines:** {booking_data.get('numCabins', 'N/A')}
+            """)
+        
+        if booking_data.get('status') == 'PENDING':
+            ui.button('Ir para Pagamento', on_click=lambda: ui.navigate.to(booking_data.get('paymentLink'), new_tab=True))
+
+    except Exception as e:
+        ui.label(f'Erro ao carregar detalhes da reserva: {e}').classes('text-negative')
+
+    ui.button('Voltar para Minhas Reservas', on_click=lambda: ui.navigate.to('/')) \
+        .props('icon=arrow_back').classes('q-mt-md')
+
 @ui.page('/')
 async def main_page():
     if not app.storage.user.get('email'):
@@ -172,13 +213,35 @@ async def main_page():
                             bookings_container.clear()
                             with bookings_container:
                                 bookings_table = ui.table(columns=booking_columns, rows=bookings_data, row_key='id').classes('w-full')
-                                bookings_table.add_slot('body-cell-createdAt', r'''<q-td :props="props">{{ new Date(props.value).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) }}</q-td>''')
-                                bookings_table.add_slot('body-cell-status', r'''<q-td :props="props"><q-badge :color="props.value === 'PENDING' ? 'orange' : (props.value === 'CONFIRMED' ? 'green' : 'red')">{{ props.value }}</q-badge></q-td>''')
-                                bookings_table.add_slot('body-cell-actions', r'''<q-td :props="props"><q-btn v-if="props.row.status === 'PENDING' && props.row.paymentLink" color="green" label="Pagar" dense @click="() => window.open(props.row.paymentLink, '_blank')" /><q-btn color="red" class="q-ml-sm" label="Cancelar" dense @click="$parent.$emit('cancel_booking', props.row)" /></q-td>''')
-                                async def cancel_booking(e):
+                                
+                                bookings_table.add_slot('body-cell-createdAt', r'''
+                                    <q-td :props="props">
+                                        {{ new Date(props.value).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) }}
+                                    </q-td>
+                                ''')
+                                bookings_table.add_slot('body-cell-status', r'''
+                                    <q-td :props="props">
+                                        <q-badge :color="props.value === 'PENDING' ? 'orange' : (props.value === 'CONFIRMED' ? 'green' : 'red')">
+                                            {{ props.value }}
+                                        </q-badge>
+                                    </q-td>
+                                ''')
+                                
+                                bookings_table.add_slot('body-cell-actions', r'''
+                                    <q-td :props="props">
+                                        <q-btn color="primary"
+                                               label="Detalhes"
+                                               dense
+                                               @click="$parent.$emit('view_details', props.row)" />
+                                    </q-td>
+                                ''')
+
+                                def handle_view_details(e):
                                     booking_id = e.args['id']
-                                    ui.notify(f'Cancelamento da reserva {booking_id} ainda não implementado.', 'info')
-                                bookings_table.on('cancel_booking', cancel_booking)
+                                    ui.navigate.to(f'/booking/{booking_id}')
+
+                                bookings_table.on('view_details', handle_view_details)
+                                
                             ui.notify(f'{len(bookings_data)} reservas encontradas.', 'positive')
                         else:
                             ui.notify(f"Não foi possível buscar suas reservas (Cód: {response.status_code})", type='negative')
