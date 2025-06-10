@@ -11,12 +11,15 @@ export const EXCHANGES = {
 
 export const QUEUES = {
   BOOKING_CREATED: "reserva-criada",
+  BOOKING_CANCELED: "reserva-cancelada",
   PAYMENT_APPROVED: "ms-reserva:pagamento-aprovado",
   PAYMENT_REJECTED: "ms-reserva:pagamento-recusado",
   TICKET_GENERATED: "bilhete-gerado",
 };
 
 export const ROUTING_KEYS = {
+  BOOKING_CREATED: "created",
+  BOOKING_CANCELED: "canceled",
   PAYMENT_APPROVED: "approved",
   PAYMENT_REJECTED: "rejected",
   TICKET_GENERATED: "generated",
@@ -29,16 +32,26 @@ export async function initRabbitMQ() {
   channel = await connection.createChannel();
   console.log("[✔️] Connected to RabbitMQ");
 
-  await channel.assertExchange(EXCHANGES.BOOKING, "fanout", { durable: true });
+  await channel.assertExchange(EXCHANGES.BOOKING, "direct", { durable: true });
   await channel.assertExchange(EXCHANGES.PAYMENT, "direct", { durable: true });
   await channel.assertExchange(EXCHANGES.TICKET, "fanout", { durable: true });
 
   await channel.assertQueue(QUEUES.BOOKING_CREATED, { durable: true });
+  await channel.assertQueue(QUEUES.BOOKING_CANCELED, { durable: true });
   await channel.assertQueue(QUEUES.PAYMENT_APPROVED, { durable: true });
   await channel.assertQueue(QUEUES.PAYMENT_REJECTED, { durable: true });
   await channel.assertQueue(QUEUES.TICKET_GENERATED, { durable: true });
 
-  await channel.bindQueue(QUEUES.BOOKING_CREATED, EXCHANGES.BOOKING, "");
+  await channel.bindQueue(
+    QUEUES.BOOKING_CREATED,
+    EXCHANGES.BOOKING,
+    ROUTING_KEYS.BOOKING_CREATED
+  );
+  await channel.bindQueue(
+    QUEUES.BOOKING_CANCELED,
+    EXCHANGES.BOOKING,
+    ROUTING_KEYS.BOOKING_CANCELED
+  );
 
   await channel.bindQueue(
     QUEUES.PAYMENT_APPROVED,

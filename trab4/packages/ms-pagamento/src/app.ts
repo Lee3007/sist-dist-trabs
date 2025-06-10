@@ -1,16 +1,18 @@
-import { startBookingsConsumer } from "./booking-consumer";
+import express from "express";
+import routes from "./routes";
 import { processPayment } from "./process-payment";
 import { initRabbitMQ } from "./rabbitmq";
 import { config } from "dotenv";
 
-config();
-await initRabbitMQ();
-await startBookingsConsumer(async (message) => {
-  const shouldApprovePayment = getRandomInt(2) === 0;
+const app = express();
+const port = 3003;
+app.use(express.json());
+app.use(routes);
 
-  await processPayment(message, shouldApprovePayment)
+app.listen(port, async () => {
+  console.log(`✅ Server running at http://localhost:${port}`);
+  config();
+  await initRabbitMQ();
+
+  console.log("✅ All consumers started successfully.\n\n");
 });
-
-function getRandomInt(max: number) {
-  return Math.floor(Math.random() * max);
-}

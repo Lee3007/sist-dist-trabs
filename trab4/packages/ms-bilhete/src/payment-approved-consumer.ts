@@ -1,11 +1,6 @@
 import { getChannel, QUEUES } from "./rabbitmq";
-import { verifySignature } from "./verify-signature";
 import { generateTicket } from "./generate-ticket";
-
-interface SignedPayload {
-  message: string;
-  signature: string;
-}
+import crypto from "crypto";
 
 export async function startPaymentApprovedConsumer() {
   const ch = getChannel();
@@ -14,34 +9,19 @@ export async function startPaymentApprovedConsumer() {
 
   ch.consume(
     QUEUES.PAYMENT_APPROVED,
-    async (msg) => {
+    async (msg: any) => {
       if (msg !== null) {
         try {
           console.log(`[📥] Received message from ${QUEUES.PAYMENT_APPROVED}`);
 
           const content = msg.content.toString();
-          const signedPayload = JSON.parse(content) as SignedPayload;
-
-          const isSignatureValid = verifySignature(
-            signedPayload.message,
-            signedPayload.signature
-          );
-
-          if (!isSignatureValid) {
-            console.error("[❌] Invalid signature - rejecting message");
-            ch.nack(msg, false, false);
-            return;
-          }
-
-          console.log("[✔️] Signature verified successfully");
-
-          const bookingData = JSON.parse(signedPayload.message);
+          const bookingData = JSON.parse(content);
           console.log(`[🔄] Generating ticket for booking: ${bookingData}`);
 
           const ticket = {
             ...bookingData,
             status: "TICKET_ISSUED",
-            ticket: signedPayload.signature.slice(0, 8),
+            ticket: (await hashObject(bookingData)).slice(0, 8),
           };
           console.log(`[🎫] Ticket generated with ID: ${ticket.id}`);
 
@@ -57,4 +37,17 @@ export async function startPaymentApprovedConsumer() {
     },
     { noAck: false }
   );
+}
+
+async function hashObject(obj: any) {
+  const json = JSON.stringify(obj);
+  const encoder = new TextEncoder();
+  const data = encoder.encode(json);
+
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+  return hashHex;
 }

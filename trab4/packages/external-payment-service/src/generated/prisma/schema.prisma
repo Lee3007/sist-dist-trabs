@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Itinerary {
+  id             Int    @id @default(autoincrement()) @map("id")
+  destination    String @map("destination")
+  embarkPort     String @map("embark_port")
+  disembarkPort  String @map("disembark_port")
+  visitedPlaces  String @map("visited_places")
+  duration       Int    @map("duration")
+  pricePerPerson Float  @map("price_per_person")
+  shipName       String @map("ship_name")
+
+  trips Trip[]
+
+  @@map("itineraries")
+}
+
+model Trip {
+  id              Int      @id @default(autoincrement()) @map("id")
+  itineraryId     Int      @map("itinerary_id")
+  departureDate   DateTime @map("departure_date")
+  discount        Float    @default(0) @map("discount")
+  availableCabins Int      @default(0) @map("available_cabins")
+
+  itinerary Itinerary @relation(fields: [itineraryId], references: [id])
+  bookings  Booking[]
+
+  @@map("trips")
+}
+
+model Booking {
+  id                Int           @id @default(autoincrement()) @map("id")
+  email             String        @map("email")
+  tripId            Int           @map("trip_id")
+  externalPaymentId Int           @unique @default(0) @map("external_payment_id")
+  numPassengers     Int           @map("num_passengers")
+  numCabins         Int           @map("num_cabins")
+  paymentLink       String        @map("payment_link")
+  status            BookingStatus @default(PENDING) @map("status")
+  createdAt         DateTime      @default(now()) @map("created_at")
+
+  trip Trip @relation(fields: [tripId], references: [id])
+
+  @@map("bookings")
+}
+
+enum BookingStatus {
+  PENDING // Aguardando pagamento
+  CANCELED // Reserva cancelada
+  APPROVED // Pagamento aprovado
+  REJECTED // Pagamento recusado
+  TICKET_ISSUED // Bilhete gerado
+}
+
+model Payment {
+  id        Int           @id @default(autoincrement()) @map("id")
+  email     String        @map("email")
+  fullName  String        @map("full_name")
+  address   String        @map("address")
+  status    PaymentStatus @default(PENDING) @map("status")
+  createdAt DateTime      @default(now()) @map("created_at")
+
+  @@map("payments")
+}
+
+enum PaymentStatus {
+  PENDING
+  REJECTED
+  APPROVED
+}

@@ -132,16 +132,27 @@ exports.Prisma.TripScalarFieldEnum = {
   id: 'id',
   itineraryId: 'itineraryId',
   departureDate: 'departureDate',
-  discount: 'discount'
+  discount: 'discount',
+  availableCabins: 'availableCabins'
 };
 
 exports.Prisma.BookingScalarFieldEnum = {
   id: 'id',
   email: 'email',
   tripId: 'tripId',
+  externalPaymentId: 'externalPaymentId',
   numPassengers: 'numPassengers',
   numCabins: 'numCabins',
   paymentLink: 'paymentLink',
+  status: 'status',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.PaymentScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  fullName: 'fullName',
+  address: 'address',
   status: 'status',
   createdAt: 'createdAt'
 };
@@ -157,15 +168,23 @@ exports.Prisma.QueryMode = {
 };
 exports.BookingStatus = exports.$Enums.BookingStatus = {
   PENDING: 'PENDING',
+  CANCELED: 'CANCELED',
   APPROVED: 'APPROVED',
   REJECTED: 'REJECTED',
   TICKET_ISSUED: 'TICKET_ISSUED'
 };
 
+exports.PaymentStatus = exports.$Enums.PaymentStatus = {
+  PENDING: 'PENDING',
+  REJECTED: 'REJECTED',
+  APPROVED: 'APPROVED'
+};
+
 exports.Prisma.ModelName = {
   Itinerary: 'Itinerary',
   Trip: 'Trip',
-  Booking: 'Booking'
+  Booking: 'Booking',
+  Payment: 'Payment'
 };
 
 /**

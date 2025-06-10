@@ -1,23 +1,22 @@
 import { EXCHANGES, getChannel, ROUTING_KEYS } from "@/rabbitmq";
-import { createSignedPayload } from "@/sign-message";
+import { Booking } from "./models";
 
-export async function processPayment(message: string, approve: boolean = true) {
+export async function processPayment(booking: Booking) {
   const ch = getChannel();
   await new Promise((resolve) => setTimeout(resolve, 5000));
-  const bookingData = JSON.parse(message);
-  bookingData.status = approve ? "APPROVED" : "REJECTED";
-  const payload = await createSignedPayload(JSON.stringify(bookingData));
-  const routingKey = approve
-    ? ROUTING_KEYS.PAYMENT_APPROVED
-    : ROUTING_KEYS.PAYMENT_REJECTED;
+  const routingKey =
+    booking.status === "APPROVED"
+      ? ROUTING_KEYS.PAYMENT_APPROVED
+      : ROUTING_KEYS.PAYMENT_REJECTED;
   ch.publish(
     EXCHANGES.PAYMENT,
     routingKey,
-    Buffer.from(JSON.stringify(payload)),
+    Buffer.from(JSON.stringify(booking)),
     { persistent: true }
   );
   const logMessage =
-    (approve ? "[✅] Payment approved for: " : "[❌] Payment rejected for: ") +
-    message;
+    (booking.status === "APPROVED"
+      ? "[✅] Payment approved for: "
+      : "[❌] Payment rejected for: ") + booking.id;
   console.log(logMessage);
 }

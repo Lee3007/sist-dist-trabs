@@ -1,5 +1,4 @@
 import { getChannel, QUEUES } from "@/rabbitmq";
-import { verifySignature } from "./verify-signature";
 import { bookingRepository } from "@/repositories/booking.repository";
 
 interface SignedPayload {
@@ -20,22 +19,7 @@ export async function startPaymentRejectedConsumer() {
           console.log(`[📥] Received message from ${QUEUES.PAYMENT_REJECTED}`);
 
           const content = msg.content.toString();
-          const signedPayload = JSON.parse(content) as SignedPayload;
-
-          const isSignatureValid = verifySignature(
-            signedPayload.message,
-            signedPayload.signature
-          );
-
-          if (!isSignatureValid) {
-            console.error("[❌] Invalid signature - rejecting message");
-            ch.nack(msg, false, false);
-            return;
-          }
-
-          console.log("[✔️] Signature verified successfully");
-
-          const bookingData = JSON.parse(signedPayload.message);
+          const bookingData = JSON.parse(content);
           console.log(`[🔄] Updating database booking status: ${bookingData}`);
 
           bookingRepository.update(bookingData.id, {

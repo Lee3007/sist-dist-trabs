@@ -34,6 +34,7 @@ model Trip {
   itineraryId      Int      @map("itinerary_id")
   departureDate    DateTime @map("departure_date")
   discount         Float    @default(0) @map("discount")
+  availableCabins  Int      @default(0) @map("available_cabins")
 
   itinerary        Itinerary @relation(fields: [itineraryId], references: [id])
   bookings         Booking[]
@@ -45,6 +46,7 @@ model Booking {
   id               Int           @id @default(autoincrement()) @map("id")
   email            String        @map("email")
   tripId           Int           @map("trip_id")
+  externalPaymentId Int         @map("external_payment_id")
   numPassengers    Int           @map("num_passengers")
   numCabins        Int           @map("num_cabins")
   paymentLink      String        @map("payment_link")
@@ -58,7 +60,25 @@ model Booking {
 
 enum BookingStatus {
   PENDING       // Aguardando pagamento
+  CANCELED      // Reserva cancelada
   APPROVED      // Pagamento aprovado
   REJECTED      // Pagamento recusado
   TICKET_ISSUED // Bilhete gerado
+}
+
+model Payment {
+  id               Int           @id @default(autoincrement()) @map("id")
+  email            String        @map("email")
+  fullName         String        @map("full_name")
+  address          String        @map("address")
+  status           PaymentStatus @default(PENDING) @map("status")   
+  createdAt        DateTime      @default(now()) @map("created_at")
+
+  @@map("payments")
+}
+
+enum PaymentStatus {
+  PENDING
+  REJECTED
+  APPROVED
 }

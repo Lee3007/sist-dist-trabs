@@ -3,12 +3,10 @@ import amqp from "amqplib";
 let channel: amqp.Channel;
 
 export const EXCHANGES = {
-  BOOKING: "reservas",
   PAYMENT: "pagamentos",
 };
 
 export const QUEUES = {
-  BOOKING_CREATED: "reserva-criada",
   PAYMENT_APPROVED: "ms-pagamento:pagamento-aprovado",
   PAYMENT_REJECTED: "pagamento-recusado",
 };
@@ -25,14 +23,10 @@ export async function initRabbitMQ() {
   channel = await connection.createChannel();
   console.log("[✔️] Connected to RabbitMQ");
 
-  await channel.assertExchange(EXCHANGES.BOOKING, "fanout", { durable: true });
   await channel.assertExchange(EXCHANGES.PAYMENT, "direct", { durable: true });
 
-  await channel.assertQueue(QUEUES.BOOKING_CREATED, { durable: true });
   await channel.assertQueue(QUEUES.PAYMENT_APPROVED, { durable: true });
   await channel.assertQueue(QUEUES.PAYMENT_REJECTED, { durable: true });
-
-  await channel.bindQueue(QUEUES.BOOKING_CREATED, EXCHANGES.BOOKING, "");
 
   await channel.bindQueue(
     QUEUES.PAYMENT_APPROVED,
