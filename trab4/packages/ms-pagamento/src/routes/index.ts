@@ -2,7 +2,6 @@ import { Router, Request, Response } from "express";
 import axios from "axios";
 import { processPayment } from "@/process-payment";
 import { bookingRepository } from "@/repositories/booking.repository";
-import { tripRepository } from "@/repositories/trip.repository";
 
 const router = Router();
 
@@ -38,17 +37,6 @@ router.post("/payments-webhook", async (req: Request, res: Response) => {
         .json({ message: "Payment processed successfully" });
     }
     booking.status = status;
-    await bookingRepository.update(booking.id, { status: booking.status });
-    if (booking.status === "REJECTED") {
-      const trip = await tripRepository.findById(booking.tripId);
-      if (!trip) {
-        console.log("Trip not found for booking ID:", booking.tripId);
-        throw new Error("Trip not found");
-      }
-      await tripRepository.update(booking.tripId, {
-        availableCabins: trip.availableCabins + booking.numCabins,
-      });
-    }
     await processPayment(booking);
 
     res.status(200).json({ message: "Payment processed successfully" });

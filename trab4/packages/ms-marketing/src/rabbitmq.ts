@@ -1,10 +1,10 @@
-import amqp from 'amqplib';
+import amqp from "amqplib";
 
-let connection: amqp.ChannelModel
+let connection: amqp.ChannelModel;
 let channel: amqp.Channel;
 
 export const EXCHANGES = {
-    PROMOTIONS: "promocoes"
+  PROMOTIONS: "promocoes",
 };
 
 export async function initRabbitMQ() {
@@ -13,12 +13,14 @@ export async function initRabbitMQ() {
   );
   channel = await connection.createChannel();
 
-  await channel.assertExchange(EXCHANGES.PROMOTIONS, "direct", { durable: false });
-  
+  await channel.assertExchange(EXCHANGES.PROMOTIONS, "fanout", {
+    durable: true,
+  });
+
   return channel;
 }
 
 export function getChannel() {
-  if (!channel) throw new Error('RabbitMQ not initialized');
+  if (!channel) throw new Error("RabbitMQ not initialized");
   return channel;
 }

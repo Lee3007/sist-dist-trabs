@@ -54,6 +54,7 @@ router.post("/payments/pay/:id", async (req: Request, res: Response) => {
     const updated = await paymentRepository.update(parseInt(req.params.id), {
       status: "APPROVED",
     });
+    console.log("Payment approved:", updated);
     axios.post("http://localhost:3003/payments-webhook", {
       ...updated,
     });

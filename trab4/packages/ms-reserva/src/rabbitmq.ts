@@ -7,6 +7,7 @@ export const EXCHANGES = {
   BOOKING: "reservas",
   PAYMENT: "pagamentos",
   TICKET: "bilhetes",
+  PROMOTION: "promocoes",
 };
 
 export const QUEUES = {
@@ -15,6 +16,7 @@ export const QUEUES = {
   PAYMENT_APPROVED: "ms-reserva:pagamento-aprovado",
   PAYMENT_REJECTED: "ms-reserva:pagamento-recusado",
   TICKET_GENERATED: "bilhete-gerado",
+  PROMOTION_GENERATED: "promocao-gerada",
 };
 
 export const ROUTING_KEYS = {
@@ -35,12 +37,16 @@ export async function initRabbitMQ() {
   await channel.assertExchange(EXCHANGES.BOOKING, "direct", { durable: true });
   await channel.assertExchange(EXCHANGES.PAYMENT, "direct", { durable: true });
   await channel.assertExchange(EXCHANGES.TICKET, "fanout", { durable: true });
+  await channel.assertExchange(EXCHANGES.PROMOTION, "fanout", {
+    durable: true,
+  });
 
   await channel.assertQueue(QUEUES.BOOKING_CREATED, { durable: true });
   await channel.assertQueue(QUEUES.BOOKING_CANCELED, { durable: true });
   await channel.assertQueue(QUEUES.PAYMENT_APPROVED, { durable: true });
   await channel.assertQueue(QUEUES.PAYMENT_REJECTED, { durable: true });
   await channel.assertQueue(QUEUES.TICKET_GENERATED, { durable: true });
+  await channel.assertQueue(QUEUES.PROMOTION_GENERATED, { durable: true });
 
   await channel.bindQueue(
     QUEUES.BOOKING_CREATED,
@@ -64,6 +70,8 @@ export async function initRabbitMQ() {
     EXCHANGES.PAYMENT,
     ROUTING_KEYS.PAYMENT_REJECTED
   );
+
+  await channel.bindQueue(QUEUES.PROMOTION_GENERATED, EXCHANGES.PROMOTION, "");
 
   await channel.bindQueue(QUEUES.TICKET_GENERATED, EXCHANGES.TICKET, "");
 

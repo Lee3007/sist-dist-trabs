@@ -1,3 +1,4 @@
+import { sendSseUpdate } from "@/app/sse/booking";
 import { getChannel, QUEUES } from "@/rabbitmq";
 import { bookingRepository } from "@/repositories/booking.repository";
 
@@ -18,9 +19,14 @@ export async function startTicketGeneratedConsumer() {
 
           console.log(`[🔄] Updating database booking status:`, bookingData);
 
-          await bookingRepository.update(bookingData.id, {
-            status: "TICKET_ISSUED",
-          });
+          const updatedBooking = await bookingRepository.update(
+            bookingData.id,
+            {
+              status: "TICKET_ISSUED",
+            }
+          );
+
+          sendSseUpdate(bookingData.id, updatedBooking);
 
           console.log(`[✅] Booking status updated to TICKET_ISSUED`);
 
