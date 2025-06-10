@@ -72,19 +72,22 @@ async def booking_details_page(booking_id: int):
     def handle_sse_update(e: events.GenericEventArguments):
         try:
             data = e.args.get('detail') if isinstance(e.args, dict) else e.args
-            booking_data = json.loads(data)
-            ui.notify(f"Status da reserva #{booking_id} atualizado para: {booking_data.get('status')}", type='info')
-            build_details_card(booking_data)
-        except (json.JSONDecodeError, TypeError, AttributeError) as error:
+            booking_data = json.loads(data) if isinstance(data, str) else data
+            if(type(booking_data) is dict):
+                ui.notify(f"Status da reserva #{booking_id} atualizado para: {booking_data.get('status')}", type='info')
+                build_details_card(booking_data)
+        except json.JSONDecodeError as json_error:
+            pass
+        except (TypeError, AttributeError) as error:
             print(f"Erro ao processar dados do SSE: {error}, dados: {e.args}")
 
     def handle_sse_connected():
         if status_indicator.text != 'Conectado':
-            status_indicator.set_text('Conectado').props('color=green')
+            status_indicator.set_text('Conectado')
         
     def handle_sse_disconnected():
         if status_indicator.text != 'Desconectado':
-            status_indicator.set_text('Desconectado').props('color=red')
+            status_indicator.set_text('Desconectado')
             ui.notify('Conexão em tempo real perdida.', type='negative')
 
 
