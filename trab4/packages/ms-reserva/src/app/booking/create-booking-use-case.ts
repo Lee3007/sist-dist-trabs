@@ -38,18 +38,13 @@ export class CreateBookingUseCase {
 
     const newBooking: Omit<Booking, "id"> = {
       ...data,
-      paymentLink: "",
+      paymentLink: paymentLink,
       status: "PENDING",
       createdAt: new Date(),
       externalPaymentId: paymentId,
     };
 
     const booking = await this.bookingRepository.create(newBooking);
-
-    this.bookingRepository.update(booking.id, {
-      paymentLink,
-      externalPaymentId: paymentId,
-    });
 
     await sendBookingCreatedMessage(
       JSON.stringify({ ...booking, paymentLink })
