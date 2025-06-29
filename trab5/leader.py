@@ -1,0 +1,115 @@
+import grpc
+from concurrent import futures
+import time
+import threading
+
+import replication_pb2
+import replication_pb2_grpc
+
+REPLICA_URLS = {
+    'replica1': 'localhost:50052',
+    'replica2': 'localhost:50053',
+    'replica3': 'localhost:50054',
+}
+QUORUM_MAJORITY_COUNT = len(REPLICA_URLS) // 2 + 1
+
+
+class ReplicationServicer(replication_pb2_grpc.ReplicationServicer):
+    def __init__(self):
+        self.log = []
+        self.epoch = 1
+        self.offset = 0
+        self.committed_offset = -1
+        self._lock = threading.Lock()
+
+    def ClientWrite(self, request, context):
+        with self._lock:
+            log_entry = replication_pb2.LogEntry(
+                epoch=self.epoch,
+                offset=self.offset,
+                data=request.data
+            )
+            print(f"\n[Lider] Recebido do cliente: '{request.data}'. Criando LogEntry (Epoch: {log_entry.epoch}, Offset: {log_entry.offset})")
+            
+            self.log.append(log_entry)
+            current_offset = self.offset
+            self.offset += 1
+
+        acks_received = self._replicate_to_all_replicas(log_entry)
+        
+        if acks_received >= QUORUM_MAJORITY_COUNT:
+            print(f"[Lider] Quorum de {QUORUM_MAJORITY_COUNT} alcancado para offset {current_offset}. Enviando commit.")
+            
+            with self._lock:
+                self.committed_offset = current_offset
+
+            self._send_commit_to_all_replicas(self.epoch, current_offset)
+            
+            return replication_pb2.ClientWriteResponse(success=True, message="Dados gravados com sucesso.")
+        else:
+            print(f"[Lider] Falha ao obter quorum para offset {current_offset}. Acks: {acks_received}")
+            return replication_pb2.ClientWriteResponse(success=False, message="Falha ao obter quorum das replicas.")
+
+    def ClientRead(self, request, context):
+        with self._lock:
+            if self.committed_offset == -1:
+                return replication_pb2.ClientReadResponse(found=False)
+            
+            last_committed_entry = self.log[self.committed_offset]
+            print(f"[Lider] Cliente solicitou leitura. Retornando o ultimo dado 'committed' (Offset: {last_committed_entry.offset}).")
+            return replication_pb2.ClientReadResponse(
+                found=True,
+                data=last_committed_entry.data,
+                epoch=last_committed_entry.epoch,
+                offset=last_committed_entry.offset
+            )
+
+    def _replicate_to_all_replicas(self, log_entry):
+        ack_count = 0
+        
+        def replicate_to_one(address):
+            nonlocal ack_count
+            try:
+                with grpc.insecure_channel(address) as channel:
+                    stub = replication_pb2_grpc.ReplicationStub(channel)
+                    request = replication_pb2.AppendEntriesRequest(leader_epoch=self.epoch, entry=log_entry)
+                    response = stub.AppendEntries(request, timeout=1.0) 
+                    if response.success:
+                        with self._lock:
+                            nonlocal ack_count
+                            ack_count += 1
+                        print(f"[Lider] ACK recebido de {address} para offset {log_entry.offset}")
+            except grpc.RpcError as e:
+                print(f"[Lider] Erro ao replicar para {address}: {e.details()}")
+
+        with futures.ThreadPoolExecutor() as executor:
+            list(executor.map(replicate_to_one, REPLICA_URLS.values()))
+
+        return ack_count
+
+    def _send_commit_to_all_replicas(self, epoch, offset):
+        def commit_on_one(address):
+            try:
+                with grpc.insecure_channel(address) as channel:
+                    stub = replication_pb2_grpc.ReplicationStub(channel)
+                    request = replication_pb2.CommitRequest(epoch=epoch, offset=offset)
+                    stub.CommitEntry(request, timeout=1.0)
+                    print(f"[Lider] Ordem de commit enviada para {address} para offset {offset}")
+            except grpc.RpcError as e:
+                print(f"[Lider] Erro ao enviar commit para {address}: {e.details()}")
+        
+        with futures.ThreadPoolExecutor() as executor:
+            executor.map(commit_on_one, REPLICA_URLS.values())
+
+
+def serve():
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    replication_pb2_grpc.add_ReplicationServicer_to_server(ReplicationServicer(), server)
+    port = "50051"
+    server.add_insecure_port('[::]:' + port)
+    print(f"Servidor do Lider iniciado na porta {port}...")
+    server.start()
+    server.wait_for_termination()
+
+if __name__ == '__main__':
+    serve()
