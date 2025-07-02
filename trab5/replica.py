@@ -20,6 +20,15 @@ class ReplicaServicer(replication_pb2_grpc.ReplicationServicer):
             if request.entry.offset < len(self.log):
                  self.log = self.log[:request.entry.offset]
 
+        if request.entry.offset > self.expected_offset:
+            print(f"[{self.replica_id}] Solicitando sincronizacao ao lider")
+            return replication_pb2.AppendEntriesResponse(
+                success=False,
+                needs_sync=True,
+                replica_id=self.replica_id,
+                last_offset=self.expected_offset - 1 if self.expected_offset > 0 else -1
+            )
+
         self.log.append({'entry': request.entry, 'committed': False})
         self.expected_offset = request.entry.offset + 1
         
@@ -37,6 +46,37 @@ class ReplicaServicer(replication_pb2_grpc.ReplicationServicer):
         else:
             print(f"[{self.replica_id}] Falha ao commitar. Offset {request.offset} nao encontrado ou epoca nao corresponde.")
             return replication_pb2.CommitResponse(success=False)
+
+    def SyncEntries(self, request, context):
+        print(f"\n[{self.replica_id}] Recebendo sincronizacao do lider com {len(request.entries)} entradas")
+
+        try:
+            for entry in request.entries:
+                if entry.offset == self.expected_offset:
+                    self.log.append({'entry': entry, 'committed': False})
+                    self.expected_offset += 1
+                    print(f"[{self.replica_id}] Entrada sincronizada (Offset: {entry.offset}) adicionada como UNCOMMITTED")
+                elif entry.offset < self.expected_offset:
+                    print(f"[{self.replica_id}] Pulando entrada offset {entry.offset} (ja existe)")
+                    continue
+                else:
+                    print(f"[{self.replica_id}] Erro na sincronizacao: offset {entry.offset} fora de ordem")
+                    return replication_pb2.SyncEntriesResponse(success=False)
+
+            if request.committed_offset >= 0:
+                for i in range(min(request.committed_offset + 1, len(self.log))):
+                    if not self.log[i]['committed']:
+                        self.log[i]['committed'] = True
+                        print(f"[{self.replica_id}] Entrada offset {i} marcada como COMMITTED durante sincronizacao")
+
+                self.committed_offset = min(request.committed_offset, len(self.log) - 1)
+
+            print(f"[{self.replica_id}] Sincronizacao concluida. Estado atual: {len(self.log)} entradas, committed_offset: {self.committed_offset}")
+            return replication_pb2.SyncEntriesResponse(success=True)
+
+        except Exception as e:
+            print(f"[{self.replica_id}] Erro durante sincronizacao: {e}")
+            return replication_pb2.SyncEntriesResponse(success=False)
 
 def serve(replica_id, port):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

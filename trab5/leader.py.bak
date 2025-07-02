@@ -68,16 +68,16 @@ class ReplicationServicer(replication_pb2_grpc.ReplicationServicer):
         """Handle synchronization requests from replicas that are out of sync"""
         print(f"\n[Lider] Recebida solicitacao de sincronizacao da replica {request.replica_id}")
         print(f"[Lider] Replica reporta last_offset: {request.last_offset}")
-
+        
         with self._lock:
             start_offset = max(0, request.last_offset + 1)
             entries_to_send = []
-
+            
             for i in range(start_offset, len(self.log)):
                 entries_to_send.append(self.log[i])
-
+            
             print(f"[Lider] Enviando {len(entries_to_send)} entradas para sincronizacao (offset {start_offset} a {len(self.log) - 1})")
-
+            
             return replication_pb2.SyncResponse(
                 success=True,
                 entries=entries_to_send,
@@ -86,7 +86,7 @@ class ReplicationServicer(replication_pb2_grpc.ReplicationServicer):
 
     def _replicate_to_all_replicas(self, log_entry):
         ack_count = 0
-
+        
         def replicate_to_one(address):
             nonlocal ack_count
             try:
@@ -115,27 +115,27 @@ class ReplicationServicer(replication_pb2_grpc.ReplicationServicer):
         try:
             with grpc.insecure_channel(address) as channel:
                 stub = replication_pb2_grpc.ReplicationStub(channel)
-
+                
                 with self._lock:
                     start_offset = max(0, last_offset + 1)
                     entries_to_send = []
-
+                    
                     for i in range(start_offset, len(self.log)):
                         entries_to_send.append(self.log[i])
-
+                
                 if entries_to_send:
                     sync_request = replication_pb2.SyncResponse(
                         success=True,
                         entries=entries_to_send,
                         committed_offset=self.committed_offset
                     )
-
+                    
                     response = stub.SyncEntries(sync_request, timeout=5.0)
                     if response.success:
                         print(f"[Lider] Sincronizacao bem-sucedida com replica {replica_id}")
                     else:
                         print(f"[Lider] Falha na sincronizacao com replica {replica_id}")
-
+                        
         except grpc.RpcError as e:
             print(f"[Lider] Erro ao sincronizar replica {replica_id}: {e.details()}")
 

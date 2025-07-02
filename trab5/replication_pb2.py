@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11replication.proto\x12\x0breplication\"7\n\x08LogEntry\x12\r\n\x05\x65poch\x18\x01 \x01(\x03\x12\x0e\n\x06offset\x18\x02 \x01(\x03\x12\x0c\n\x04\x64\x61ta\x18\x03 \x01(\t\"\"\n\x12\x43lientWriteRequest\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\t\"7\n\x13\x43lientWriteResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\"\x13\n\x11\x43lientReadRequest\"^\n\x12\x43lientReadResponse\x12\x11\n\x04\x64\x61ta\x18\x01 \x01(\tH\x00\x88\x01\x01\x12\r\n\x05\x65poch\x18\x02 \x01(\x03\x12\x0e\n\x06offset\x18\x03 \x01(\x03\x12\r\n\x05\x66ound\x18\x04 \x01(\x08\x42\x07\n\x05_data\"R\n\x14\x41ppendEntriesRequest\x12\x14\n\x0cleader_epoch\x18\x01 \x01(\x03\x12$\n\x05\x65ntry\x18\x02 \x01(\x0b\x32\x15.replication.LogEntry\"<\n\x15\x41ppendEntriesResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x12\n\nreplica_id\x18\x02 \x01(\t\".\n\rCommitRequest\x12\r\n\x05\x65poch\x18\x01 \x01(\x03\x12\x0e\n\x06offset\x18\x02 \x01(\x03\"!\n\x0e\x43ommitResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x32\xce\x02\n\x0bReplication\x12P\n\x0b\x43lientWrite\x12\x1f.replication.ClientWriteRequest\x1a .replication.ClientWriteResponse\x12M\n\nClientRead\x12\x1e.replication.ClientReadRequest\x1a\x1f.replication.ClientReadResponse\x12V\n\rAppendEntries\x12!.replication.AppendEntriesRequest\x1a\".replication.AppendEntriesResponse\x12\x46\n\x0b\x43ommitEntry\x12\x1a.replication.CommitRequest\x1a\x1b.replication.CommitResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11replication.proto\x12\x0breplication\"7\n\x08LogEntry\x12\r\n\x05\x65poch\x18\x01 \x01(\x03\x12\x0e\n\x06offset\x18\x02 \x01(\x03\x12\x0c\n\x04\x64\x61ta\x18\x03 \x01(\t\"\"\n\x12\x43lientWriteRequest\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\t\"7\n\x13\x43lientWriteResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\"\x13\n\x11\x43lientReadRequest\"^\n\x12\x43lientReadResponse\x12\x11\n\x04\x64\x61ta\x18\x01 \x01(\tH\x00\x88\x01\x01\x12\r\n\x05\x65poch\x18\x02 \x01(\x03\x12\x0e\n\x06offset\x18\x03 \x01(\x03\x12\r\n\x05\x66ound\x18\x04 \x01(\x08\x42\x07\n\x05_data\"R\n\x14\x41ppendEntriesRequest\x12\x14\n\x0cleader_epoch\x18\x01 \x01(\x03\x12$\n\x05\x65ntry\x18\x02 \x01(\x0b\x32\x15.replication.LogEntry\"e\n\x15\x41ppendEntriesResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x12\n\nreplica_id\x18\x02 \x01(\t\x12\x12\n\nneeds_sync\x18\x03 \x01(\x08\x12\x13\n\x0blast_offset\x18\x04 \x01(\x03\".\n\rCommitRequest\x12\r\n\x05\x65poch\x18\x01 \x01(\x03\x12\x0e\n\x06offset\x18\x02 \x01(\x03\"!\n\x0e\x43ommitResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"6\n\x0bSyncRequest\x12\x12\n\nreplica_id\x18\x01 \x01(\t\x12\x13\n\x0blast_offset\x18\x02 \x01(\x03\"a\n\x0cSyncResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12&\n\x07\x65ntries\x18\x02 \x03(\x0b\x32\x15.replication.LogEntry\x12\x18\n\x10\x63ommitted_offset\x18\x03 \x01(\x03\"&\n\x13SyncEntriesResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x32\xd7\x03\n\x0bReplication\x12P\n\x0b\x43lientWrite\x12\x1f.replication.ClientWriteRequest\x1a .replication.ClientWriteResponse\x12M\n\nClientRead\x12\x1e.replication.ClientReadRequest\x1a\x1f.replication.ClientReadResponse\x12V\n\rAppendEntries\x12!.replication.AppendEntriesRequest\x1a\".replication.AppendEntriesResponse\x12\x46\n\x0b\x43ommitEntry\x12\x1a.replication.CommitRequest\x1a\x1b.replication.CommitResponse\x12;\n\x04Sync\x12\x18.replication.SyncRequest\x1a\x19.replication.SyncResponse\x12J\n\x0bSyncEntries\x12\x19.replication.SyncResponse\x1a .replication.SyncEntriesResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -44,11 +44,17 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_APPENDENTRIESREQUEST']._serialized_start=301
   _globals['_APPENDENTRIESREQUEST']._serialized_end=383
   _globals['_APPENDENTRIESRESPONSE']._serialized_start=385
-  _globals['_APPENDENTRIESRESPONSE']._serialized_end=445
-  _globals['_COMMITREQUEST']._serialized_start=447
-  _globals['_COMMITREQUEST']._serialized_end=493
-  _globals['_COMMITRESPONSE']._serialized_start=495
-  _globals['_COMMITRESPONSE']._serialized_end=528
-  _globals['_REPLICATION']._serialized_start=531
-  _globals['_REPLICATION']._serialized_end=865
+  _globals['_APPENDENTRIESRESPONSE']._serialized_end=486
+  _globals['_COMMITREQUEST']._serialized_start=488
+  _globals['_COMMITREQUEST']._serialized_end=534
+  _globals['_COMMITRESPONSE']._serialized_start=536
+  _globals['_COMMITRESPONSE']._serialized_end=569
+  _globals['_SYNCREQUEST']._serialized_start=571
+  _globals['_SYNCREQUEST']._serialized_end=625
+  _globals['_SYNCRESPONSE']._serialized_start=627
+  _globals['_SYNCRESPONSE']._serialized_end=724
+  _globals['_SYNCENTRIESRESPONSE']._serialized_start=726
+  _globals['_SYNCENTRIESRESPONSE']._serialized_end=764
+  _globals['_REPLICATION']._serialized_start=767
+  _globals['_REPLICATION']._serialized_end=1238
 # @@protoc_insertion_point(module_scope)

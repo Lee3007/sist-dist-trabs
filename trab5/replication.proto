@@ -4,12 +4,11 @@ package replication;
 
 service Replication {
     rpc ClientWrite(ClientWriteRequest) returns (ClientWriteResponse);
-
     rpc ClientRead(ClientReadRequest) returns (ClientReadResponse);
-
     rpc AppendEntries(AppendEntriesRequest) returns (AppendEntriesResponse);
-
     rpc CommitEntry(CommitRequest) returns (CommitResponse);
+    rpc Sync(SyncRequest) returns (SyncResponse);
+    rpc SyncEntries(SyncResponse) returns (SyncEntriesResponse);
 }
 
 message LogEntry {
@@ -37,7 +36,6 @@ message ClientReadResponse {
     bool found = 4;
 }
 
-
 message AppendEntriesRequest {
     int64 leader_epoch = 1;
     LogEntry entry = 2;
@@ -46,6 +44,8 @@ message AppendEntriesRequest {
 message AppendEntriesResponse {
     bool success = 1;
     string replica_id = 2;
+    bool needs_sync = 3;
+    int64 last_offset = 4;
 }
 
 message CommitRequest {
@@ -54,5 +54,20 @@ message CommitRequest {
 }
 
 message CommitResponse {
+    bool success = 1;
+}
+
+message SyncRequest {
+    string replica_id = 1;
+    int64 last_offset = 2;
+}
+
+message SyncResponse {
+    bool success = 1;
+    repeated LogEntry entries = 2;
+    int64 committed_offset = 3;
+}
+
+message SyncEntriesResponse {
     bool success = 1;
 }

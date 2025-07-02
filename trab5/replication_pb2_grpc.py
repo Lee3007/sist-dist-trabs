@@ -54,6 +54,16 @@ class ReplicationStub(object):
                 request_serializer=replication__pb2.CommitRequest.SerializeToString,
                 response_deserializer=replication__pb2.CommitResponse.FromString,
                 _registered_method=True)
+        self.Sync = channel.unary_unary(
+                '/replication.Replication/Sync',
+                request_serializer=replication__pb2.SyncRequest.SerializeToString,
+                response_deserializer=replication__pb2.SyncResponse.FromString,
+                _registered_method=True)
+        self.SyncEntries = channel.unary_unary(
+                '/replication.Replication/SyncEntries',
+                request_serializer=replication__pb2.SyncResponse.SerializeToString,
+                response_deserializer=replication__pb2.SyncEntriesResponse.FromString,
+                _registered_method=True)
 
 
 class ReplicationServicer(object):
@@ -83,6 +93,18 @@ class ReplicationServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def Sync(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SyncEntries(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ReplicationServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -105,6 +127,16 @@ def add_ReplicationServicer_to_server(servicer, server):
                     servicer.CommitEntry,
                     request_deserializer=replication__pb2.CommitRequest.FromString,
                     response_serializer=replication__pb2.CommitResponse.SerializeToString,
+            ),
+            'Sync': grpc.unary_unary_rpc_method_handler(
+                    servicer.Sync,
+                    request_deserializer=replication__pb2.SyncRequest.FromString,
+                    response_serializer=replication__pb2.SyncResponse.SerializeToString,
+            ),
+            'SyncEntries': grpc.unary_unary_rpc_method_handler(
+                    servicer.SyncEntries,
+                    request_deserializer=replication__pb2.SyncResponse.FromString,
+                    response_serializer=replication__pb2.SyncEntriesResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -215,6 +247,60 @@ class Replication(object):
             '/replication.Replication/CommitEntry',
             replication__pb2.CommitRequest.SerializeToString,
             replication__pb2.CommitResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def Sync(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/replication.Replication/Sync',
+            replication__pb2.SyncRequest.SerializeToString,
+            replication__pb2.SyncResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SyncEntries(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/replication.Replication/SyncEntries',
+            replication__pb2.SyncResponse.SerializeToString,
+            replication__pb2.SyncEntriesResponse.FromString,
             options,
             channel_credentials,
             insecure,
